@@ -1,0 +1,711 @@
+<!doctype refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+
+<!-- Process this file with docbook-to-man to generate an nroff manual
+     page: `docbook-to-man manpage.sgml > manpage.1'.  You may view
+     the manual page with: `docbook-to-man manpage.sgml | nroff -man |
+     less'.  A typical entry in a Makefile or Makefile.am is:
+
+manpage.1: manpage.sgml
+	docbook-to-man $< > $@
+
+    
+	The docbook-to-man binary is found in the docbook-to-man package.
+	Please remember that if you create the nroff version in one of the
+	debian/rules file targets (such as build), you will need to include
+	docbook-to-man in your Build-Depends control field.
+
+  -->
+
+  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
+  <!ENTITY dhfirstname "<firstname>Uwe</firstname>">
+  <!ENTITY dhsurname   "<surname>Steinmann</surname>">
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY dhdate      "<date>August 08, 2005</date>">
+  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
+       allowed: see man(7), man(1). -->
+  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
+  <!ENTITY dhemail     "<email>uwe@steinmann.cx</email>">
+  <!ENTITY dhusername  "Uwe Steinmann">
+  <!ENTITY dhucpackage "<refentrytitle>PXVIEW</refentrytitle>">
+  <!ENTITY dhpackage   "pxview">
+
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <address>
+      &dhemail;
+    </address>
+    <author>
+      &dhfirstname;
+      &dhsurname;
+    </author>
+    <copyright>
+      <year>2003-2005</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    &dhdate;
+  </refentryinfo>
+  <refmeta>
+    &dhucpackage;
+
+    &dhsection;
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+
+    <refpurpose>Read Paradox file and show information or dump the records in different formats</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+
+      <arg><option>-h | --help <replaceable></replaceable></option></arg>
+      <arg><option>--verbose <replaceable></replaceable></option></arg>
+
+      <arg><option>-i | --info <replaceable></replaceable></option></arg>
+      <arg><option>-c | --csv <replaceable></replaceable></option></arg>
+      <arg><option>-s | --sql <replaceable></replaceable></option></arg>
+      <arg><option>-x | --html <replaceable></replaceable></option></arg>
+      <arg><option>-t | --schema <replaceable></replaceable></option></arg>
+      <arg><option>-v | --verbose <replaceable></replaceable></option></arg>
+      <arg><option>--mode=MODE <replaceable></replaceable></option></arg>
+      <arg><option>-o FILE | --output-file=FILE <replaceable></replaceable></option></arg>
+      <arg><option>-b FILE | --blobfile=FILE <replaceable></replaceable></option></arg>
+      <arg><option>-p PREFIX | --blobprefix=PREFIX <replaceable></replaceable></option></arg>
+      <arg><option>--blobextension=EXT <replaceable></replaceable></option></arg>
+      <arg><option>-n FILE | --primary-index-file=FILE <replaceable></replaceable></option></arg>
+      <arg><option>-r ENCODING | --recode=ENCODING <replaceable></replaceable></option></arg>
+      <arg><option>--separator=CHAR <replaceable></replaceable></option></arg>
+      <arg><option>--enclosure=CHAR <replaceable></replaceable></option></arg>
+      <arg><option>--fields=REGEX <replaceable></replaceable></option></arg>
+      <arg><option>--tablename=NAME <replaceable></replaceable></option></arg>
+      <arg><option>--delete-table <replaceable></replaceable></option></arg>
+      <arg><option>--skip-schema <replaceable></replaceable></option></arg>
+      <arg><option>--use-copy <replaceable></replaceable></option></arg>
+      <arg><option>--short-insert <replaceable></replaceable></option></arg>
+      <arg><option>--set-sql-type=SPEC <replaceable></replaceable></option></arg>
+      <arg><option>--timestamp-format=FORMAT <replaceable></replaceable></option></arg>
+      <arg><option>--time-format=FORMAT <replaceable></replaceable></option></arg>
+      <arg><option>--date-format=FORMAT <replaceable></replaceable></option></arg>
+      <arg><option>--empty-string-is-null <replaceable></replaceable></option></arg>
+      <arg><option>--output-deleted <replaceable></replaceable></option></arg>
+      <arg><option>--mark-deleted <replaceable></replaceable></option></arg>
+      <arg>FILE </arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+
+    <para>This manual page documents the
+      <command>&dhpackage;</command> command.</para>
+
+    <para>&dhpackage; reads Paradox files and prints information about
+		  the file or dumps the records to stdout or a file. &dhpackage; is mostly
+			applied on Paradox .DB files but can also be used to show
+			information about other Paradox files. It can also read associated
+			blob files (.MB) and write each blob into a separate file.
+      </para>
+		<para>&dhpackage; can be used to convert Paradox databases into spreadsheet
+		  readable CSV files (comma separated values) or SQL insert statements to
+			import the records into a relational database. The sql output is optimized
+			to be used with PostgreSQL.</para>
+		<para>The programm can read encrypted an unencrypted .db and .mb files.
+		  There is not need to provide a password in order to read encrypted files.
+			</para>
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+
+    <para>The program follows the usual &gnu; command line syntax,
+      with long options starting with two dashes (`-').  A summary of
+      options is included below.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-h</option>
+          <option>--help</option>
+        </term>
+        <listitem>
+          <para>Show summary of options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--version</option>
+        </term>
+        <listitem>
+          <para>Show version of program.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-o</option>
+          <option>--output-file</option>
+        </term>
+        <listitem>
+          <para>All output except for usage information and error messages
+					 will be written to the given file instead of stdout.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-i</option>
+          <option>--info</option>
+        </term>
+        <listitem>
+          <para>Show information about Paradox file. If no other output format
+					 is specified this will be the default.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-t</option>
+          <option>--schema</option>
+        </term>
+        <listitem>
+          <para>Dump schema of database as it would be created by the official
+					 Paradox software, when a database is exported in CSV format. This
+					 option is the short form for --mode=schema.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-v</option>
+          <option>--verbose</option>
+        </term>
+        <listitem>
+          <para>Output some more information from the header. This option is only
+					 needed if you want see some internal information which are usually
+					 not of any interessed.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-c</option>
+          <option>--csv</option>
+        </term>
+        <listitem>
+          <para>Dump data records in CSV format. The first line of the output
+					  contains the names of each field, its type and size. This
+						option is the short form for --mode=csv.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-s</option>
+          <option>--sql</option>
+        </term>
+        <listitem>
+          <para>Dump data records in SQL format. This
+						option is the short form for --mode=sql.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-x</option>
+          <option>--html</option>
+        </term>
+        <listitem>
+          <para>Dump data records in HTML table format. This
+						option is the short form for --mode=html.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-q</option>
+          <option>--sqlite</option>
+        </term>
+        <listitem>
+          <para>Dump data records into a sqlite database. This
+						option is the short form for --mode=sqlite. sqlite output always
+						requires to specify an output file with the option --output-file.
+						If the sqlite database file already exists, then &dhpackage; will
+						create a new table within that file. If a table with the same name
+						already exists, it will not be overwritten unless you pass the
+						option --delete-table.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--mode=MODE</option>
+        </term>
+        <listitem>
+          <para>Sets the ouput mode. This options provides a different way
+					 to set the output format. --mode=sql is equivalent to --sql,
+					 --mode=csv to --csv, --mode=html to --html, --mode=sqlite to
+					 --sqlite and --mode=schema
+					 to --schema.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-b FILE</option>
+          <option>--blobfile=FILE</option>
+        </term>
+        <listitem>
+          <para>If the database files references blobs (binary large objects)
+					 then read them from the
+					 given file and write each blob of type Blob, OLE, and Graphic
+					 into a single file. The filename will
+					 be constructed from the blobprefix option (or the tablename if no
+					 prefix is given), an underscore, the
+					 internal number of the blob and the value from the
+					 blobextension option (`blob' if
+					 no extension is given) separated by a dot. Blobs of
+					 type Memo and FmtMemo are treated like alpha fields and
+					 its content will be inserted into the regular output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-p PREFIX</option>
+          <option>--blobprefix=PREFIX</option>
+        </term>
+        <listitem>
+          <para>Use this prefix for each filename of a blob. You can write
+				   all blobs into a single directory by specifying a valid directory
+					 path name. You will have to make sure the directory exists before
+					 running &dhpackage;.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--blobextension=EXT</option>
+        </term>
+        <listitem>
+          <para>Use this extension for each filename of a blob. If no extension
+					  is given, then `blob' will be used instead.
+					 </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-n FILE</option>
+          <option>--primary-index-file=FILE</option>
+        </term>
+        <listitem>
+          <para>Read the primary index from file. This option is only valid
+					  it you are reading a database file.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-r ENCODING</option>
+          <option>--recode=ENCODING</option>
+        </term>
+        <listitem>
+          <para>Recode all fields of type alpha to the given encoding. You will
+					 have to specify the encoding similar to the
+					 <application>recode</application> command, by passing only the part
+					 on the right hand side of the `..' of what you usually pass to
+					 recode.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--separator=CHAR</option>
+        </term>
+        <listitem>
+          <para>If the database is exported in csv format the given character
+					 will be used to separate field values. Other output formats will not
+					 be affected by this option. The default value is ','.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--enclosure=CHAR</option>
+        </term>
+        <listitem>
+          <para>If the database is exported in csv format the given character
+					 will be used to enclose field values if the field is of type char().
+					 The enclosure will only take place if the delimiter between fields
+					 is part of the field value.  Other output formats will not
+					 be affected by this option. The default value is '"'.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--fields=REGEX</option>
+        </term>
+        <listitem>
+          <para>This option allows to select certain fields by specifying
+					 an extended regular expression. It will only effect the csv, html,
+					 sql, and sqlite output. "field1|field23$" will select all fields whose name
+					 contains "field1" or end in "field23". If this option is not used
+					 als fields will be shown. The field name is case insensitive.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--output-deleted</option>
+        </term>
+        <listitem>
+          <para>Output even those records that has been deleted. Paradox
+					  does not mark a record as deleted, but rather marks a complete
+						data block (which usually contains several records) or sets
+						its size to a lower value. If this option is active, then
+						&dhpackage; will assume each data block is filled with its
+						maximum number of records. This assumption may not always be true,
+						especially for the last data block. Therefore you should handle
+						the output with care.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--mark-deleted</option>
+        </term>
+        <listitem>
+          <para>Adds an additional column to the csv and html output which
+					  indicates whether a record is deleted or actually available.
+						This option is only available in csv and html mode and makes
+						only sense if the option <option>--ouput-deleted</option> is
+						passed as well. If you do not pass
+						<option>--output-deleted</option> you will get
+						an extra column with just zeros because none of the records is 
+						deleted, otherwise it would not be shown.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--delete-table</option>
+        </term>
+        <listitem>
+          <para>Adds a sql command at the begining of the sql output to delete
+					 an existing table before creating the new one. If used in sqlite
+					 mode it will drop the table before creating a new one.
+					 This option only affects sql and sqlite output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--skip-schema</option>
+        </term>
+        <listitem>
+          <para>Do not add at the beginning of the sql output the commands
+					 to create the table schema. This is useful if an existing table
+					 shall be populated with new records.
+					 This option only affects sql and sqlite output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--use-copy</option>
+        </term>
+        <listitem>
+          <para>Use the sql COPY statement in the sql output instead of the
+					 default INSERT. Using COPY is usually faster when the data is
+					 imported into a database, but less supported
+					 by databases. This option only affects sql output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--short-insert</option>
+        </term>
+        <listitem>
+          <para>Use a short version of INSERT statements in the sql output.
+					 This will skip the list of field names which are being affected
+					 by the insert statement,
+					 but uses a form like 'insert into tablename values (...)'.
+					 Such statements will only work if the table has the same number
+					 of fields in the same order as the INSERT statement lists the
+					 field values. This option will mostly not be appropriate if you
+					 want to extract some fields from a larger table (--fields) and
+					 populate an existing sql table whose schema is not identical to
+					 the paradox file.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--tablename=NAME</option>
+        </term>
+        <listitem>
+          <para>Use given tablename instead of the one stored in the database
+					 file. This option only affects schema, sql and sqlite output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--set-sql-type=SPEC</option>
+        </term>
+        <listitem>
+          <para>Overrides the default mapping from a paradox field type to
+					  a sql field type. This option only affects sql and sqlite output
+						and should be used with care. You can output the predefined
+						mapping by
+						passing the option <option>--help</option>. SPEC is a colon
+						separated pair of field types. The one left to the colon is
+						the paradox type, the other one is the sql type. The paradox
+						type is one of `alpha', `date', `short', `long', `currency',
+						`number', `logical', `memoblob', `blob', `fmtblob', `ole',
+						`graphic', `time', `timestamp',
+						`autoinc', `bcd', or `bytes'. The sql type can be any available
+						type like real, integer or text. It is up to the user to specify
+						a valid type. If the sql type requires
+						a length (e.g char(x)), then it can put into
+						the type specification with the placeholder `%d', e.g.
+						`alpha:char(%d)'. There is currently no check for reasonable
+						type mapping.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--empty-string-is-null</option>
+        </term>
+        <listitem>
+          <para>Outputs NULL in the sql ouput for all empty strings in the
+					  paradox file. This option only affects sql and sqlite output.
+						Paradox does not distinguish between fields of type alpha
+						which has no characters or contain the NULL string. The default
+						is to tread them as empty strings. By passing this option they
+						will be treaded as NULL strings in the sql output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--timestamp-format=FORMAT</option>
+        </term>
+        <listitem>
+          <para>Overrides the default format for outputing timestamps.
+					  The default is set to 'Y-m-d H:i:s'. Check the section on
+						'Date/Time formats' for a complete list of placeholders in the
+						format string.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--time-format=FORMAT</option>
+        </term>
+        <listitem>
+          <para>Overrides the default format for outputing times.
+					  The default is set to 'H:i:s'. Check the section on
+						'Date/Time formats' for a complete list of placeholders in the
+						format string.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--date-format=FORMAT</option>
+        </term>
+        <listitem>
+          <para>Overrides the default format for outputing dates.
+					  The default is set to 'Y-m-d'. Check the section on
+						'Date/Time formats' for a complete list of placeholders in the
+						format string.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+		<para>The none optional parameter FILE is the Paradox file which shall
+		 be read.</para>
+		<para>If you pass two or more options to set the output format then
+		 each format
+		 will be output one after the other starting with csv followed by
+		 html and finally sql.</para>
+		<para>The default field separator if exporting csv format is a tabulator.
+		 Fields will be enclosed in " if required.</para>
+  </refsect1>
+	<refsect1>
+	  <title>BLOB FILES</title>
+		<para>Fields of type blob will only be regarded in the output
+		  if a file is set with the option <option>--blobfile</option>
+			containing the blobs (usually a .MB file). Paradox distinguishes
+			five different types of blobs of which two of them are actually pure
+			text and the remaining three are binary data. The two text blobs
+			(Memo and FmtMemo) are treaded like alpha fields and its content will
+			be included in the regular output. The binary blobs are separately
+			written to a file.</para>
+  </refsect1>
+	<refsect1>
+	  <title>PRIMARY INDEX FILES</title>
+		<para>&dhpackage; supports not just the reading and outputting of DB
+		  files but also
+		  of primary and secondary index files (PX, XGx, YGx files). This section
+			will only focus on primary index files. Do not confuse this with the
+			option <option>--primary-index-file</option> which is just
+			accelerated access on database records in a .DB file, but this section
+			is about outputting the content of a primary index file.</para>
+		<para>An index file
+			has the same basename as the database file. If it exists, then the database
+			file will have the header field 'Num. of prim. Key fields' set to a
+			value greater than 0. An index file is actually a regular database file
+			with some extra columns and a slightly different header. There is no
+			further reference between the database and the index file beside the file
+			name. You can always read a database without its primary index, but
+			access will be slower.</para>
+		<para>Each database file may have one or more primary key fields. The number
+			is stored in the header of the database file.  Primary key fields
+			must be in the first n columns of the database file. If for
+			example the number of primary key fields is set to two, then the
+			first two fields in the database file are primary keys.
+			Consequently the .PX file will have these two fields as well. The
+			values of the primay key fields in the index file are those of the
+			first record in the referenced data block (see below).</para>
+		<para>Each primary index file has beside the key fields three further
+		  columns which point to data blocks in the database file. In order
+			to understand these columns you need to know that database files are
+			segmented into datablocks. The size of each data block can be calculated
+			from the 'Max. Table size' value in the database file header. Datablocks
+			are organized in a double linked list. Each
+			data block is prefaced by a six bytes data block header which contains
+			references to the previous and next data block in the list and the size
+			of the block.</para>
+		<para>The n+1 column (with n being the number of primary key fields) in the
+		  primary index file contains the block number in the database file.
+			The first block has number 1. The block number is
+			used to locate the data block in the database file. It can be calculated
+			by `(blocknumber - 1) * datablocksize + headersize'.
+		  The n+2 column contains the number of records in the
+		  referenced data block.</para>
+		<para>Beside records whose block numbers point to blocks in the database
+		  file, there are also so called index blocks. Its block numbers reffer
+			other index blocks in the primary index itself. The reason for this is
+			the tree structure of the index which is explained in the file
+			/usr/share/doc/pxlib-doc/paradox4.txt. The number of records in this
+			index blocks is the sum of all records referenced by the records in
+			the block this block references. If for example you have 100 records
+			each pointing to a data block in the database with 5 records each,
+			and those 100 records are store in a datablock number 1 in the index
+			file, then the reference from an index record to this block number 1
+			will have a record count 100*5. The index record itself will be part
+			of an index block.</para>
+		<para>The last column has some unknown meaning. It is often set to
+		  zero.</para>
+		<para>When you output the content of an primary index file you will
+		  notice a forth extra column. This one is added by &dhpackage; itself.
+			It is the block number the current record is stored in. It is very
+			helpful for investigating the tree structure of the index file.
+			Quite often one will find index blocks at the begining of an index
+			file.</para>
+	</refsect1>
+	<refsect1>
+	  <title>DATE/TIME FORMATS</title>
+		<para>Paradox knows three field types for date and time values. Each
+		  of those can be formated by specifying a format string with the
+			options <option>--timestamp-format</option>,
+			<option>--time-format</option>, <option>--date-format</option>.</para>
+		<para>A format string contains arbitrary characters with some of them
+		  having a special meaning. The following list describes the characters
+			with a special meaning.</para>
+    <variablelist>
+      <varlistentry>
+        <term>Y</term>
+        <listitem>
+          <para>A full numeric representation of a year, 4 digits
+					 (e.g. 1999 or 2004).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>y</term>
+        <listitem>
+          <para>A two digit representation of a year (e.g. 99 or 04).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>m</term>
+        <listitem>
+          <para>Numeric representation of a month, with leading zeros, 01 to 12.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>n</term>
+        <listitem>
+          <para>Numeric representation of a month, without leading zeros, 1 to 12.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>d</term>
+        <listitem>
+          <para>Day of the month, 2 digits with leading zeros, 01 to 31.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>j</term>
+        <listitem>
+          <para>Day of the month without leading zeros, 1 to 31</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>H</term>
+        <listitem>
+          <para>24-hour format of an hour with leading zeros, 00 to 23.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>h</term>
+        <listitem>
+          <para>12-hour format of an hour with leading zeros, 01 to 12.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>G</term>
+        <listitem>
+          <para>24-hour format of an hour without leading zeros, 0 to 23.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>g</term>
+        <listitem>
+          <para>12-hour format of an hour without leading zeros, 1 to 12.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>i</term>
+        <listitem>
+          <para>Minutes with leading zeros, 00 to 59.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>s</term>
+        <listitem>
+          <para>Seconds, with leading zeros, 00 to 59.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>A</term>
+        <listitem>
+          <para>Uppercase Ante meridiem and Post meridiem, AM or PM.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>a</term>
+        <listitem>
+          <para>Lowercase Ante meridiem and Post meridiem, am or pm.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>S</term>
+        <listitem>
+          <para>English ordinal suffix for the day of the month, 2 characters, st, nd, rd, or th.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>L</term>
+        <listitem>
+          <para>Whether it's a leap year, 1 if it is a leap year, 0 otherwise.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+	</refsect1>
+	<refsect1>
+	  <title>ENCRYPTED FILES</title>
+		<para>Paradox supports file encryption for .db and .mb files. &dhpackage;
+		  can read encrypted files without specifying a password. You will actually
+			not notice while reading a paradox file whether it is encrypted or not.
+			The only difference is an extra line in the information output, listing
+			the encryption vector which is a 4 byte hash value of the password.
+			There is currently no way for &dhpackage; to regain the passwort from
+			the hash.</para>
+	</refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+
+    <para>pxwrite(1), recode(1), iconv(1)</para>
+
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+
+    <para>This manual page was written by &dhusername; &lt;&dhemail;&gt;.
+      Permission is
+      granted to copy, distribute and/or modify this document under
+      the terms of the &gnu; Free Documentation
+      License, Version 1.1 or any later version published by the Free
+      Software Foundation; with no Invariant Sections, no Front-Cover
+      Texts and no Back-Cover Texts.</para>
+
+  </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->
+
+

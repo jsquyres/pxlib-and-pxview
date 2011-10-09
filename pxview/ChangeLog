@@ -1,0 +1,162 @@
+Version 0.2.5
+	- output some more information about blobs in debug mode
+	- Output password checksum if file is encrypted
+	- output format of timestamp, date, time can be set with program
+	  option. The default has been changed to the sql format.
+
+Version 0.2.4
+	- check return value of PX_get_data_alpha() and output an error message
+	  if needed
+	- mask special chars in memoblobs (sql output)
+	- use delimeter char for fields if they contain a line break (csv output)
+	- surrounds field data of memoblobs by enclosure char (csv output)
+	- primary key fields are treated as unique(field1, field2, field3, ...)
+	  and not unique(field1), unique(field2), ...
+	- fixed various memory leaks
+	- fixed many compiler warnings
+	- configure checks for PX_timestamp2string() to ensure pxlib >= 0.4.3
+	  is present
+	- use functions like PX_get_num_fields() and PX_get_value() instead
+	  of directly accessing the file header structure
+	- create html version of manual pages on request
+
+Version 0.2.3
+	- fixed reading and outputting timestamps, uses the new function
+	  PX_timestamp2string() of pxlib >= 0.4.3
+
+Version 0.2.2
+	- No need to specify a blob file if all blobs are contained in the
+	  db file.
+	- Use PX_get_data_blob()
+	- fixed endless loop in str_buffer_printmask()
+	- sql type for time and timestamp can be both set on the command line
+
+Version 0.2.1
+	- new option --blobextension
+	- removed option --include-blobs (blobs are only read if a .MB file is given)
+	- updated man page
+	- filename of blobs is created properly if no filename prefix is given
+	- fields of type BCD can be read
+	- used fixed field length of 17 for BCD type of fields
+	- boolean values must be 0 or 1 in sqlite (not true or false)
+	- sql output: all blobs are by default text fields. If it is a memo
+	  it will contain the blob content otherwise the content will be written
+		to file and the field contains the file name.
+	- reading of blobs is finally working
+
+Version 0.2.0
+	- fixed reading of blob files (needs at least pxlib >= 0.2.11)
+
+Version 0.1.13
+	- several updates of manual page
+	- added new option --empty-string-is-null
+	- fixed some typos in this ChangeLog file
+
+Version 0.1.12
+	- added new option --set-sql-type
+	- added new option --short-insert
+
+Version 0.1.11
+	- exit configure if sqlite support is requested but header file is not found
+	- new option skip-schema to omit sql command to create table structure
+	- output of sqlite is much saver in terms of buffer overflows
+
+Version 0.1.10
+	- added reading of fields of type pxfGraphic in csv mode
+	- reorganize usage information
+	- --tablename in html mode sets caption of html table
+	- allow to set info mode with --mode=info
+	- do not output option -q in usage information if sqlite is not available
+
+Version 0.1.9
+	- mask ' and tabulator in sql and sqlite output
+	- use ',' as the default separator for fields in csv output
+	- Mask the enclosure char in csv output if it occurs in a field value
+	- pxfCurrency and pxfNumber are mapped to double in sql output
+	- fixed BCD and Date fields in sql output
+	- columns without a name will be named 'column%d' (such columns
+	  exist in primary index files)
+	- added option --version
+	- New option --without-head to suppress first line with field
+	  names in csv output
+	- added complete header line to csv output of primary index files
+
+Version 0.1.8
+	- All float values will formated with %g and not %f
+	- sql output uses by default INSERT-statements, --use-copy
+	  enforces the use of the COPY-statement which was the default
+	  up to version 0.1.7
+
+Version 0.1.7
+	- First line of HTML output uses <th> instead of <td><b>
+	- added configure option --with-memory-debug
+
+Version 0.1.6
+	- fixed freeing of memory
+
+Version 0.1.5
+	- support for sqlite output
+	- added first line to csv ouput with field name, type and size
+	- added type and size to table header line of html output
+
+Version 0.1.4
+	- support for gsf library
+
+Version 0.1.3
+	- output file with name "-" means stdout
+	- csv output of .PX files got an extra column with the block number of
+	  the current record for better investigation of the index file
+	- output of first and last block number
+	- option 'output' is now 'output-file'
+	- fixed debug output
+	- added output of fileUpdateTime
+	- some smaller cleanups
+	- Use PX_get_data_byte() instead accessing the data directly
+
+Version 0.1.2
+	- added option --primary-index-file to read a primary index which
+	  accelerates access 
+	- debug mode: output information about the datablock where a record is stored
+	- usage output has been to restrictive if run as pxview
+	- options --output-deleted, --delete-table has been misinterpreted
+	- new option --mark-deleted to mark those records which are deleted
+	  the csv and html ouput will have an extra column
+
+Version 0.1.1
+	- html output
+	- field selection is case insenitive
+
+Version 0.1.0
+	- output modified flags 1 and 2 in verbose mode
+	- added aliases --include-blobs and --delete-table for
+	  --includeblobs and --deletetable
+	- allow to read deleted records (new option --output-deleted)
+	- output calculated size of a record
+	- use own error handler
+
+Version 0.0.7
+	- man pages are not created if docbook-to-man is missing
+	- program returns 1 in case of error else 0
+	- better sql output
+	- fixed potential segm fault
+	- moved manpage into section 1
+
+Version 0.0.6
+	- output sql data only if num records > 0
+	- put field values into enclosing char only if the delimiter is in
+	  the field value
+	- added option -v to output more header information
+	- added spec file to create rpms
+	- don't use enclosure characters in sql output
+
+Version 0.0.5
+	- added support for recoding alpha fields
+	- access to alpha fields is done with PX_get_data_alpha()
+
+Version 0.0.4
+  - proper handling of negative Long, Short, Double value
+	- finaly implemented export to a given output file (option --output)
+	- added option --deletetable
+	- updated manual page
+	- calling pxview as px2sql or px2csv will set the appropriate options
+	- moved data conversion routines to pxlib
