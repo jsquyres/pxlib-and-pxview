@@ -2,10 +2,10 @@ pxlib.3: pxlib.sgml
 	docbook2man $<
 	mv PXLIB.3 pxlib.3
 
-%.3: %.sgml
+.3.sgml:
 	$(DOC_TO_MAN) $< > $@
 
-%.html: %.sgml
+.html.sgml:
 	docbook2html $<
 	mv index.html $@
 

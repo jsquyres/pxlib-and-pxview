@@ -207,14 +207,13 @@ include/paradox-gsf.h
 echo
 echo "Configuration:"
 echo "  Prefix:     $prefix"
-echo -n "  Recoding:   "
 if test "$PX_HAVE_ICONV" = "1" ; then
-	echo "Using iconv for recoding.";
+	echo "  Recoding: using iconv.";
 else
 	if test "$PX_HAVE_RECODE" = "1" ; then
-		echo "Using recode for recoding.";
+		echo "  Recoding: using recode.";
 	else
-		echo "No support for recoding.";
+		echo "  Recoding: no support.";
 	fi
 fi
 echo

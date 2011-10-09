@@ -29,6 +29,9 @@
 #include <fcntl.h>
 #endif
 #include <time.h>
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
 
 #ifdef WIN32
 #include <windows.h>
