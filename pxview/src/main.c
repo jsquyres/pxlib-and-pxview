@@ -4,11 +4,15 @@
 #include <time.h>
 #include <stdarg.h>
 #include <getopt.h>
-#include <libintl.h>
 #include <sys/types.h>
 #include <regex.h>
 #include <libgen.h>
 #include "config.h"
+
+#ifdef HAVE_LIBINTL_H
+#include <libintl.h>
+#endif
+
 #ifdef HAVE_GSF
 #include <paradox-gsf.h>
 #else

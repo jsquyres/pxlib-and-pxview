@@ -1,8 +1,8 @@
 
-%.1: %.sgml
+.1.sgml:
 	$(DOC_TO_MAN) $< > $@
 
-%.html: %.sgml
+.html.sgml:
 	docbook2html $<
 	mv index.html $@
 

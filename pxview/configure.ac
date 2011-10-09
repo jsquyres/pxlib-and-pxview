@@ -177,10 +177,10 @@ doc/Makefile
 po/Makefile.in
 ])
 
-echo "
+cat <<EOF
 
 Configuration:
   Prefix:     ${prefix}
 
-"
+EOF
 
