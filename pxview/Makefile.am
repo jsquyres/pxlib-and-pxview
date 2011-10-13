@@ -1,11 +1,17 @@
-## Process this file with automake to produce Makefile.in
+ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = po src doc
 
 spec = $(PACKAGE).spec
 
-EXTRA_DIST = COPYING INSTALL intltool-extract.in intltool-merge.in intltool-update.in $(spec) $(spec).in autogen.sh
+EXTRA_DIST = \
+        COPYING \
+        INSTALL \
+        intltool-extract.in \
+        intltool-merge.in \
+        intltool-update.in \
+        $(spec) $(spec).in \
+        autogen.sh
 
 rpm: $(distdir).tar.gz
 	rpm -ta $(distdir).tar.gz
-

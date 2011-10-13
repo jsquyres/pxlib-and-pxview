@@ -3,9 +3,13 @@ AC_INIT(pxview, 0.2.5p1, http://sourceforge.net/pxlib)
 AC_CONFIG_SRCDIR(src/main.c)
 AM_INIT_AUTOMAKE([foreign dist-bzip2 no-define 1.11])
 
+AM_SILENT_RULES([yes])
+
+AC_CONFIG_SUBDIRS([m4])
+AC_CONFIG_MACRO_DIRS([m4])
+
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
-AC_PROG_INTLTOOL
 
 PXVIEW_MAJOR_VERSION=0
 PXVIEW_MINOR_VERSION=2
@@ -22,6 +26,25 @@ AC_DEFINE_UNQUOTED(PXVIEW_VERSION, "$PXVIEW_VERSION", [Version of pxview])
 
 dnl Checks for programs.
 AC_PROG_CC
+
+dnl Check for pxlib
+AC_ARG_WITH(pxlib, AC_HELP_STRING([--with-pxlib=DIR],
+                                  [Path to paradox library (/usr)]))
+if test "$with_pxlib" != "yes" -a "$with_pxlib" != "no" -a -n "$with_pxlib"; then
+	PX_LIBDIR=-L${with_pxlib}/lib
+	PX_INCLUDEDIR=-I${with_pxlib}/include 
+        CPPFLAGS="$PX_INCLUDEDIR $CPPFLAGS"
+        LDFLAGS="$PX_LIBDIR $LDFLAGS"
+fi
+
+AC_CHECK_HEADER([paradox.h], [], [AC_MSG_ERROR([Cannot find paradox.h])])
+dnl libpx may require libiconv.  So check to see if we have it (which
+dnl will automatically add it to $LIBS if we do).
+AC_CHECK_LIB([iconv], [iconv_open])
+AC_CHECK_LIB([px], [PX_timestamp2string], [], 
+  [AC_MSG_ERROR([libpx not found. You will need at least libpx 0.4.4])])
+
+PX_LIBS=-lpx
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="de"
@@ -44,6 +67,7 @@ AC_CHECK_HEADERS(fcntl.h unistd.h ctype.h dirent.h errno.h malloc.h)
 AC_CHECK_HEADERS(stdarg.h sys/stat.h sys/types.h time.h)
 AC_CHECK_HEADERS(stdlib.h sys/socket.h netinet/in.h arpa/inet.h)
 AC_CHECK_HEADERS(netdb.h sys/time.h sys/select.h sys/mman.h)
+AC_CHECK_HEADERS(libintl.h)
 
 dnl Checks for library functions.
 AC_FUNC_STRFTIME
@@ -51,23 +75,10 @@ AC_CHECK_FUNCS(strdup strndup strerror snprintf)
 AC_CHECK_FUNCS(finite isnand fp_class class fpclass)
 AC_CHECK_FUNCS(strftime localtime)
 
-AC_ARG_WITH(pxlib, [  --with-pxlib=DIR        Path to paradox library (/usr)])
-if test -r ${withval}/include/paradox.h ; then
-	PX_LIBDIR=-L${withval}/lib
-	PX_INCLUDEDIR=-I${withval}/include 
-else
-  PX_LIBDIR=-L/usr
-	PX_INCLUDEDIR=-I/usr/include 
-fi
-
-AC_CHECK_LIB(px, PX_timestamp2string,
-  PX_LIBDIR="$PX_LIBDIR",
-  AC_MSG_ERROR([libpx not found. You will need at least libpx 0.4.4]),
-  "$PX_LIBDIR")
-
-PX_LIBS=-lpx
-
-
+dnl JMS This should really be cleaned up:
+dnl - use $with_gsf
+dnl - directly add to CPPFLAGS, LDFLAGS, and LIBS
+dnl - delete all refs to GSF_LIBDIR, GSF_INCLUDEDIR (and in src/Makefile.am)
 AC_ARG_WITH(gsf, [  --with-gsf=DIR          Path to gsf library (/usr)],
 if test "x$withval" = xno; then
 	AC_MSG_RESULT("disable by user")
@@ -98,6 +109,10 @@ else
 fi
 )
 
+dnl JMS This should really be cleaned up:
+dnl - use $with_sqlite
+dnl - directly add to CPPFLAGS, LDFLAGS, and LIBS
+dnl - delete all refs to SQLITE_LIBDIR, SQLITE_INCLUDEDIR (and in src/Makefile.am)
 AC_ARG_WITH(sqlite, [  --with-sqlite=DIR       Path to sqlite library (/usr)],
 if test "x$withval" = xno; then
 	AC_MSG_RESULT("disable by user")
@@ -147,10 +162,6 @@ if test "x$with_memory_debug" = "xyes" ; then
 	AC_DEFINE(MEMORY_DEBUGGING, 1, [Define if you want memory debugging.])
 fi
 
-AC_SUBST(PX_LIBDIR)
-AC_SUBST(PX_LIBS)
-AC_SUBST(PX_INCLUDEDIR)
-
 AC_SUBST(GSF_LIBDIR)
 AC_SUBST(GSF_LIBS)
 AC_SUBST(GSF_INCLUDEDIR)
@@ -165,7 +176,6 @@ dnl AC_DEFINE_UNQUOTED(PXVIEW_MAJOR_VERSION, "$PXVIEW_MAJOR_VERSION", PXVIEW_MAJ
 dnl AC_DEFINE_UNQUOTED(PXVIEW_MINOR_VERSION, "$PXVIEW_MINOR_VERSION", PXVIEW_MINOR_VERSION)
 dnl AC_DEFINE_UNQUOTED(PXVIEW_MICRO_VERSION, "$PXVIEW_MICRO_VERSION", PXVIEW_MICRO_VERSION)
 
-dnl pxlib.spec
 AC_CONFIG_FILES([
 pxview.spec
 Makefile
@@ -181,4 +191,3 @@ Configuration:
   Prefix:     ${prefix}
 
 EOF
-
