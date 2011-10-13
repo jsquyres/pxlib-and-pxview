@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(pxlib, 0.6.3p1, http://sourceforge.net/pxlib)
 AC_CONFIG_SRCDIR(src/paradox.c)
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AM_INIT_AUTOMAKE([foreign dist-bzip2 no-define 1.11])
 
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
@@ -20,16 +20,12 @@ AC_SUBST(PXLIB_MICRO_VERSION)
 AC_SUBST(PXLIB_VERSION)
 AC_SUBST(PXLIB_VERSION_INFO)
 
-dnl VERSION=${PXLIB_VERSION}
-
 PXLIB_BUILD_DATE=`date '+%Y-%m-%d'`
 AC_DEFINE_UNQUOTED(PXLIB_BUILD_DATE,"$PXLIB_BUILD_DATE",[pxlib build date])
 AC_SUBST(PXLIB_BUILD_DATE)
 
 dnl Checks for programs.
 AC_PROG_CC
-AC_PROG_INSTALL
-AC_PROG_CPP
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="de es fr"
@@ -144,11 +140,12 @@ fi
 
 AC_CHECK_PROG(DOC_TO_MAN, docbook-to-man, docbook-to-man)
 if test ! "$DOC_TO_MAN" ; then
-	DOCDIR=
+	BUILD_DOCS=0
 	AC_MSG_RESULT([docbook-to-man could not be found. I will not build man pages!])
 else
-	DOCDIR=doc
+	BUILD_DOCS=1
 fi
+AM_CONDITIONAL(BUILD_DOCS, [test "$BUILD_DOCS" = "1"])
 
 AC_ARG_WITH(debug, [  --with-debug            Add the debugging module (on)])
 if test "$with_debug" = "no" ; then
@@ -184,14 +181,13 @@ AC_SUBST(PX_HAVE_GSF)
 
 AC_SUBST(M_LIBS)
 
-AC_SUBST(DOCDIR)
 AC_SUBST(DOC_TO_MAN)
 
 dnl AC_DEFINE_UNQUOTED(PXLIB_MAJOR_VERSION, "$PXLIB_MAJOR_VERSION", PXLIB_MAJOR_VERSION)
 dnl AC_DEFINE_UNQUOTED(PXLIB_MINOR_VERSION, "$PXLIB_MINOR_VERSION", PXLIB_MINOR_VERSION)
 dnl AC_DEFINE_UNQUOTED(PXLIB_MICRO_VERSION, "$PXLIB_MICRO_VERSION", PXLIB_MICRO_VERSION)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 pxlib.spec
 pxlib.pc
@@ -203,6 +199,7 @@ include/pxversion.h
 include/paradox.h
 include/paradox-gsf.h
 ])
+AC_OUTPUT
 
 echo
 echo "Configuration:"

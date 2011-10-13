@@ -17,7 +17,7 @@ extern "C" {
  * use those to be sure nothing nasty will happen if
  * your library and includes mismatch
  */
-#define PXLIB_DOTTED_VERSION "0.6.3"
+#define PXLIB_DOTTED_VERSION "0.6.3p1"
 #define PXLIB_MAJOR_VERSION 0
 #define PXLIB_MINOR_VERSION 6
 #define PXLIB_MICRO_VERSION 3
