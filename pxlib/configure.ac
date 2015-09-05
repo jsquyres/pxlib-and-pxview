@@ -3,6 +3,11 @@ AC_INIT(pxlib, 0.6.3p1, http://sourceforge.net/pxlib)
 AC_CONFIG_SRCDIR(src/paradox.c)
 AM_INIT_AUTOMAKE([foreign dist-bzip2 no-define 1.11])
 
+AM_SILENT_RULES([yes])
+
+AC_CONFIG_SUBDIRS([m4])
+AC_CONFIG_MACRO_DIRS([m4])
+
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 AC_PROG_INTLTOOL
@@ -63,10 +68,6 @@ AC_CHECK_FUNC(connect, , AC_CHECK_LIB(inet, connect))
 
 dnl Determine what socket length (socklen_t) data type is
 AC_MSG_CHECKING([for type of socket length (socklen_t)])
-
-dnl PX_LIBDIR='-L${libdir}'
-dnl PX_INCLUDEDIR='-I${includedir}/pxlib -I${includedir}'
-dnl PX_LIBS="-lpx $M_LIBS $LIBS"
 
 dnl
 dnl Extra flags
@@ -161,10 +162,6 @@ AC_SUBST(DEBUG_OBJ)
 
 AC_SUBST(CFLAGS)
 AC_SUBST(PX_CFLAGS)
-
-dnl AC_SUBST(PX_LIBDIR)
-dnl AC_SUBST(PX_LIBS)
-dnl AC_SUBST(PX_INCLUDEDIR)
 
 AC_SUBST(RECODE_LIBDIR)
 AC_SUBST(RECODE_LIBS)

@@ -1,12 +1,18 @@
-## Process this file with automake to produce Makefile.in
+ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = include src po doc
 
 spec = $(PACKAGE).spec
 
-EXTRA_DIST = intltool-extract.in intltool-merge.in intltool-update.in $(spec) $(spec).in autogen.sh pxlib.pc.in CMakeLists.txt cmakeconfig.h.in
-
-#all-local: $(spec)
+EXTRA_DIST = \
+        intltool-extract.in \
+        intltool-merge.in \
+        intltool-update.in \
+        $(spec) $(spec).in \
+        autogen.sh \
+        pxlib.pc.in \
+        CMakeLists.txt \
+        cmakeconfig.h.in
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pxlib.pc
