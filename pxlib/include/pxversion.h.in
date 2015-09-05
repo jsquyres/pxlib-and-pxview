@@ -18,14 +18,15 @@ extern "C" {
  * your library and includes mismatch
  */
 #define PXLIB_DOTTED_VERSION "@VERSION@"
-#define PXLIB_MAJOR_VERSION @PXLIB_MAJOR_VERSION@
-#define PXLIB_MINOR_VERSION @PXLIB_MINOR_VERSION@
-#define PXLIB_MICRO_VERSION @PXLIB_MICRO_VERSION@
+#undef PXLIB_MAJOR_VERSION
+#undef PXLIB_MINOR_VERSION
+#undef PXLIB_MICRO_VERSION
 
 /*
  * Whether Debugging module is configured in
  */
-#if @WITH_DEBUG@
+#undef WITH_DEBUG
+#if WITH_DEBUG
 #define PXLIB_DEBUG_ENABLED
 #else
 #define PXLIB_DEBUG_DISABLED

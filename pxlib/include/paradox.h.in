@@ -1,8 +1,8 @@
 #ifndef __PARADOX_H__
 #define __PARADOX_H__
 
-#define PX_USE_RECODE @PX_HAVE_RECODE@
-#define PX_USE_ICONV @PX_HAVE_ICONV@
+#undef PX_USE_RECODE
+#undef PX_USE_ICONV
 
 #include <stdio.h>
 #if PX_USE_RECODE
