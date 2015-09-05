@@ -234,6 +234,39 @@ int printmask(FILE *outfp, char *str, char c1, char c2 ) {
 }
 /* }}} */
 
+/* printmask_array() {{{
+ * Prints str and masks each occurrence of each string in the array of
+ * c1 with its corresponding string in the array c2.
+ * Returns the number of written chars.
+ */
+int printmask_array(FILE *outfp, char *str, char **c1, char **c2 ) {
+	char *ptr;
+    int i;
+    int found;
+    int checklen;
+	int len = 0;
+	ptr = str;
+	while(*ptr != '\0') {
+        for (found = i = 0; c1[i] != NULL; ++i) {
+            checklen = strlen(c1[i]);
+            if (strncmp(c1[i], ptr, checklen) == 0) {
+                fprintf(outfp, "%s", c2[i]);
+                len += strlen(c2[i]);
+                ptr += checklen;
+                found = 1;
+                break;
+            }
+        }
+        if (!found)  {
+            fprintf(outfp, "%c", *ptr);
+            len++;
+            ptr++;
+        }
+    }
+    return(len);
+}
+/* }}} */
+
 struct sql_type_map {
 	char *pxtype;
 	char *sqltype;
@@ -2251,6 +2284,18 @@ int main(int argc, char *argv[]) {
 	/* Output data as sql statements {{{
 	 */
 	if(outputsql) {
+		char *sql_search[] = {
+			"\t",
+			"\\",
+			"'",
+			NULL
+		};
+		char *sql_mask[] = {
+			"\\",
+			"\\\\",
+			"''",
+			NULL
+		};
 		if((filetype != pxfFileTypIndexDB) && 
 		   (filetype != pxfFileTypNonIndexDB)) {
 			fprintf(stderr, _("SQL output is only reasonable for DB files."));
@@ -2394,7 +2439,7 @@ int main(int argc, char *argv[]) {
 										int ret;
 										if(0 < (ret = PX_get_data_alpha(pxdoc, &data[offset], pxf->px_flen, &value))) {
 											if(strchr(value, '\t'))
-												printmask(outfp, value, '\t', '\\');
+												printmask_array(outfp, value, sql_search, sql_mask);
 											else
 												fprintf(outfp, "%s", value);
 											pxdoc->free(pxdoc, value);
@@ -2506,12 +2551,7 @@ int main(int argc, char *argv[]) {
 										if(ret > 0) {
 											if(blobdata) {
 												if(pxf->px_ftype == pxfFmtMemoBLOb || pxf->px_ftype == pxfMemoBLOb) {
-													int i;
-													for(i=0; i<size; i++) {
-														if(blobdata[i] == '\t')
-															fputc('\\', outfp);
-														fputc(blobdata[i], outfp);
-													}
+													printmask_array(outfp, blobdata, sql_search, sql_mask);
 												} else {
 													sprintf(filename, "%s_%d.%s", blobprefix, mod_nr, blobextension);
 													fp = fopen(filename, "w");
@@ -2626,12 +2666,9 @@ int main(int argc, char *argv[]) {
 										char *value;
 										int ret;
 										if(0 < (ret = PX_get_data_alpha(pxdoc, &data[offset], pxf->px_flen, &value))) {
-											if(strchr(value, '\'')) {
-												fprintf(outfp, "'");
-												printmask(outfp, value, '\'', '\\');
-												fprintf(outfp, "'");
-											} else
-												fprintf(outfp, "'%s'", value);
+											fprintf(outfp, "'");
+											printmask_array(outfp, value, sql_search, sql_mask);
+											fprintf(outfp, "'");
 											pxdoc->free(pxdoc, value);
 										} else if(ret == 0) {
 											if(emptystringisnull)
@@ -2744,12 +2781,7 @@ int main(int argc, char *argv[]) {
 										if(ret > 0) {
 											if(blobdata) {
 												if(pxf->px_ftype == pxfFmtMemoBLOb || pxf->px_ftype == pxfMemoBLOb) {
-													int i;
-													for(i=0; i<size; i++) {
-														if(blobdata[i] == '\'')
-															fputc('\\', outfp);
-														fputc(blobdata[i], outfp);
-													}
+													printmask_array(outfp, blobdata, sql_search, sql_mask);
 												} else {
 													sprintf(filename, "%s_%d.%s", blobprefix, mod_nr, blobextension);
 													fp = fopen(filename, "w");
