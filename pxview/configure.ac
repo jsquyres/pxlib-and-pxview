@@ -48,6 +48,7 @@ PX_LIBS=-lpx
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="de"
+AC_SUBST(ALL_LINGUAS)
 AM_GLIB_GNU_GETTEXT
 GETTEXT_PACKAGE=pxview
 AC_SUBST(GETTEXT_PACKAGE)

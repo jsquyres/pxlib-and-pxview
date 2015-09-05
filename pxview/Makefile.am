@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = po src doc
+SUBDIRS = src po doc
 
 spec = $(PACKAGE).spec
 
