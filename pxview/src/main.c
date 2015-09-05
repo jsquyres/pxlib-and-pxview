@@ -335,7 +335,7 @@ void errorhandler(pxdoc_t *p, int error, const char *str, void *data) {
 void usage(char *progname) {
 	int recode;
 
-	printf(_("Version: %s %s http://sourceforge.net/projects/pxlib"), progname, VERSION);
+	printf(_("Version: %s %s http://sourceforge.net/projects/pxlib"), progname, PXVIEW_VERSION);
 	printf("\n");
 	printf(_("Copyright: Copyright (C) 2003-2005 Uwe Steinmann <uwe@steinmann.cx>"));
 	printf("\n\n");
@@ -673,7 +673,7 @@ int main(int argc, char *argv[]) {
 				withouthead = 1;
 				break;
 			case 11:
-				fprintf(stdout, "%s\n", VERSION);
+				fprintf(stdout, "%s\n", PXVIEW_VERSION);
 				if(typemap) {
 					free_sql_types(typemap);
 					free(typemap);

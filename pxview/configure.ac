@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(pxview, 0.2.5p1)
+AC_INIT(pxview, 0.2.5p1, http://sourceforge.net/pxlib)
 AC_CONFIG_SRCDIR(src/main.c)
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AM_INIT_AUTOMAKE([foreign dist-bzip2 no-define 1.11])
 
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
@@ -18,13 +18,10 @@ AC_SUBST(PXVIEW_MINOR_VERSION)
 AC_SUBST(PXVIEW_MICRO_VERSION)
 AC_SUBST(PXVIEW_VERSION)
 AC_SUBST(PXVIEW_VERSION_INFO)
-
-VERSION=${PXVIEW_VERSION}
+AC_DEFINE_UNQUOTED(PXVIEW_VERSION, "$PXVIEW_VERSION", [Version of pxview])
 
 dnl Checks for programs.
 AC_PROG_CC
-AC_PROG_INSTALL
-AC_PROG_CPP
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="de"
@@ -134,11 +131,12 @@ fi
 
 AC_CHECK_PROG(DOC_TO_MAN, docbook-to-man, docbook-to-man)
 if test ! "$DOC_TO_MAN" ; then
-	DOCDIR=
+        BUILD_DOCS=0
 	AC_MSG_RESULT([docbook-to-man could not be found. I will not build man pages!])
 else
-	DOCDIR=doc
+        BUILD_DOCS=1
 fi
+AM_CONDITIONAL(BUILD_DOCS, [test "$BUILD_DOCS" = "1"])
 
 dnl
 dnl Extra flags
@@ -161,7 +159,6 @@ AC_SUBST(SQLITE_LIBDIR)
 AC_SUBST(SQLITE_LIBS)
 AC_SUBST(SQLITE_INCLUDEDIR)
 
-AC_SUBST(DOCDIR)
 AC_SUBST(DOC_TO_MAN)
 
 dnl AC_DEFINE_UNQUOTED(PXVIEW_MAJOR_VERSION, "$PXVIEW_MAJOR_VERSION", PXVIEW_MAJOR_VERSION)
@@ -169,13 +166,14 @@ dnl AC_DEFINE_UNQUOTED(PXVIEW_MINOR_VERSION, "$PXVIEW_MINOR_VERSION", PXVIEW_MIN
 dnl AC_DEFINE_UNQUOTED(PXVIEW_MICRO_VERSION, "$PXVIEW_MICRO_VERSION", PXVIEW_MICRO_VERSION)
 
 dnl pxlib.spec
-AC_OUTPUT([
+AC_CONFIG_FILES([
 pxview.spec
 Makefile
 src/Makefile
 doc/Makefile
 po/Makefile.in
 ])
+AC_OUTPUT
 
 cat <<EOF
 
