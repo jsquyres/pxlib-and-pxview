@@ -10,7 +10,6 @@ AC_CONFIG_MACRO_DIRS([m4])
 
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
-AC_PROG_INTLTOOL
 
 dnl the following sets the soname version
 PXLIB_MAJOR_VERSION=0
@@ -34,6 +33,7 @@ AC_PROG_CC
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="de es fr"
+AC_SUBST(ALL_LINGUAS)
 AM_GLIB_GNU_GETTEXT
 GETTEXT_PACKAGE=pxlib
 AC_SUBST(GETTEXT_PACKAGE)
