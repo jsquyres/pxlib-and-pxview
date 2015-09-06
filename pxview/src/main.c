@@ -19,6 +19,12 @@
 #include <paradox.h>
 #endif
 
+/* This file is not public for libpx, but some of its functions are
+   used here in pxview.  Since pxview is technically (now) part of the
+   same package... we'll allow it to use some non-public utility
+   functions. */
+#include "px_misc.h"
+
 #ifdef MEMORY_DEBUGGING
 #include <paradox-mp.h>
 #endif
@@ -1588,12 +1594,12 @@ int main(int argc, char *argv[]) {
 								break;
 							}
 							case pxfBytes:
-								hex_dump(outfp, &data[offset], pxf->px_flen);
+								px_hex_dump(outfp, &data[offset], pxf->px_flen);
 								first = 1;
 								break;
 							case pxfBCD: {
 								char *value;
-						//		hex_dump(outfp, &data[offset], pxf->px_flen);
+						//		px_hex_dump(outfp, &data[offset], pxf->px_flen);
 								if(0 < PX_get_data_bcd(pxdoc, &data[offset], pxf->px_fdc, &value)) {
 									fprintf(outfp, "%s", value);
 									pxdoc->free(pxdoc, value);
@@ -2893,7 +2899,7 @@ int main(int argc, char *argv[]) {
 				for(i=0; i<PX_get_num_fields(pxdoc); i++) {
 					if(fieldregex == NULL || selectedfields[i]) {
 						fprintf(outfp, "%s: ", pxf->px_fname);
-						hex_dump(outfp, &data[offset], pxf->px_flen);
+						px_hex_dump(outfp, &data[offset], pxf->px_flen);
 						fprintf(outfp, "\n");
 					}
 					switch(pxf->px_ftype) {
@@ -2901,10 +2907,10 @@ int main(int argc, char *argv[]) {
 						case pxfMemoBLOb:
 						case pxfBLOb: {
 							long size, index, mod_nr, boffset;
-							size = get_long_le(&data[offset+pxf->px_flen-10+4]);
-							index = get_long_le(&data[offset+pxf->px_flen-10]) & 0x000000ff;
-							mod_nr = get_short_le(&data[offset+pxf->px_flen-10+8]);
-							boffset = get_long_le(&data[offset+pxf->px_flen-10]) & 0xffffff00;
+							size = px_get_long_le(&data[offset+pxf->px_flen-10+4]);
+							index = px_get_long_le(&data[offset+pxf->px_flen-10]) & 0x000000ff;
+							mod_nr = px_get_short_le(&data[offset+pxf->px_flen-10+8]);
+							boffset = px_get_long_le(&data[offset+pxf->px_flen-10]) & 0xffffff00;
 							fprintf(outfp, "size=%ld, index=%ld, mod_nr=%d, offset=%ld\n", size, index, mod_nr, boffset);
 						}
 					}

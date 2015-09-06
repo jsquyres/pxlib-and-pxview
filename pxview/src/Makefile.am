@@ -5,6 +5,7 @@ pxview_CPPFLAGS = \
         $(GSF_INCLUDEDIR) \
         $(SQLITE_INCLUDEDIR) \
         -I@top_srcdir@/pxlib/include \
+        -I@top_srcdir@/pxlib/src \
         -DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\"
 pxview_LDADD = \
         $(top_builddir)/pxlib/src/libpx.la \
