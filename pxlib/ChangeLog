@@ -1,3 +1,10 @@
+This is the original ChangeLog for pxlib.
+
+The new, combined ChangeLog for pxlib and pxview is in the top-level
+directory.
+
+-----
+
 Version 0.6.3
 	- some man page updates
 	- check for more header files

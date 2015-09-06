@@ -1,24 +1,6 @@
-ACLOCAL_AMFLAGS = -I m4
-
-SUBDIRS = include src po doc
-
-spec = $(PACKAGE).spec
-
-EXTRA_DIST = \
-        intltool-extract.in \
-        intltool-merge.in \
-        intltool-update.in \
-        $(spec) $(spec).in \
-        autogen.sh \
-        pxlib.pc.in \
-        CMakeLists.txt \
-        cmakeconfig.h.in
+SUBDIRS = include src doc
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pxlib.pc
 
-rpm: $(distdir).tar.gz
-	rpm -ta $(distdir).tar.gz
-
-clean-am:
-	rm -rf CMakeFiles cmake_install.cmake
+EXTRA_DIST = pxlib.pc.in

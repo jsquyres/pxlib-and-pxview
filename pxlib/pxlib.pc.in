@@ -4,9 +4,8 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: libpx
-Description: A library for reading Paradox files
+Description: A library for reading Paradox database files
 Version: @VERSION@
 Requires:
 Libs: -L${libdir} -lpx @RECODE_LIBDIR@ @RECODE_LIBS@ @LIBICONV@
 Cflags: 
-

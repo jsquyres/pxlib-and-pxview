@@ -22,13 +22,12 @@ libpx_la_SOURCES = \
 		px_crypt.c \
 		gregor.c
 libpx_la_CPPFLAGS = \
-        -I@srcdir@/../include \
+        -I@top_srcdir@/pxlib/include \
         -DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\" \
         @RECODE_INCLUDEDIR@ @GSF_INCLUDEDIR@
 libpx_la_LDFLAGS = -version-info @PXLIB_VERSION_INFO@
 libpx_la_LIBADD = \
+        -lm \
         $(RECODE_LIBS) \
         $(GSF_LIBS) \
         $(INTLLIBS)
-
-BUILD_LIBS = -lm

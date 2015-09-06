@@ -2,12 +2,12 @@ bin_PROGRAMS = pxview
 
 pxview_SOURCES = main.c
 pxview_CPPFLAGS = \
-        -DBOGUS=111111 \
         $(GSF_INCLUDEDIR) \
         $(SQLITE_INCLUDEDIR) \
+        -I@top_srcdir@/pxlib/include \
         -DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\"
-
 pxview_LDADD = \
+        $(top_builddir)/pxlib/src/libpx.la \
         $(GSF_LIBDIR) \
         $(GSF_LIBS) \
         $(SQLITE_LIBDIR) \

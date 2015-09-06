@@ -1,0 +1,10 @@
+This is the combined ChangeLog for pxlib and pxview, started in September 2015.
+
+Prior to this, each project had their own ChangeLog, which are still in
+their respective directories.
+
+pxlibview v0.5:
+        - Slurped in pxlib v0.6.3 and pxview 0.2.5
+        - Modernized the GNU Autotools usage
+        - Combined them into a single package
+        - Fixed a few bugs.

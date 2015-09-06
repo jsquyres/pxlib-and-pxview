@@ -40,10 +40,8 @@ Makefile.in
 */po/*.gmo
 
 pxlib/pxlib.pc
-pxlib/pxlib.spec
 pxlib/include/pxversion.h
 pxlib/include/paradox.h
 pxlib/include/paradox-gsf.h
 
-pxview/pxview.spec
 pxview/src/pxview

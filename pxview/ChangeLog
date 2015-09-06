@@ -1,3 +1,10 @@
+This is the original ChangeLog for pxview.
+
+The new, combined ChangeLog for pxlib and pxview is in the top-level
+directory.
+
+-----
+
 Version 0.2.5
 	- output some more information about blobs in debug mode
 	- Output password checksum if file is encrypted
