@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include "px_intern.h"
 #include "paradox-mp.h"
 #include "px_error.h"
@@ -62,7 +63,7 @@ PX_mp_realloc(pxdoc_t *p, void *mem, size_t size, const char *caller) {
 		}
 	}
 	if(i == MAXMEM) {
-		fprintf(stderr, _("Aiii, did not find memory block at 0x%X to enlarge."), (unsigned int) mem);
+		fprintf(stderr, _("Aiii, did not find memory block at 0x%" PRIxPTR " to enlarge."), (uintptr_t) mem);
 		fprintf(stderr, "\n");
 	}
 	return(a);
@@ -76,7 +77,7 @@ PX_mp_free(pxdoc_t *p, void *mem) {
 		i++;
 	}
 	if(i == MAXMEM) {
-		fprintf(stderr, _("Aiii, did not find memory block at 0x%X to free."), (unsigned int) mem);
+		fprintf(stderr, _("Aiii, did not find memory block at 0x%" PRIxPTR " to free."), (uintptr_t) mem);
 		fprintf(stderr, "\n");
 	} else {
 		memlist[i].ptr = NULL;
@@ -93,7 +94,7 @@ PX_mp_list_unfreed() {
 	i = j = 0;
 	while(i < MAXMEM) {
 		if(memlist[i].ptr) {
-			fprintf(stderr, _("%d. Memory at address 0x%X (%d) not freed: '%s'."), j, (unsigned int) memlist[i].ptr, memlist[i].size, memlist[i].caller);
+			fprintf(stderr, _("%d. Memory at address 0x%" PRIxPTR " (%d) not freed: '%s'."), j, (uintptr_t) memlist[i].ptr, memlist[i].size, memlist[i].caller);
 			fprintf(stderr, "\n");
 			j++;
 		}
