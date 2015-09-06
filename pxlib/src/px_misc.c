@@ -28,7 +28,7 @@
  * routine to change little endian long to host long
  * these functions are used read header data
  */
-long get_long_le(const char *cp)
+long px_get_long_le(const char *cp)
 {
 	int ret;
 	unsigned char *source = (unsigned char *)cp;
@@ -44,7 +44,7 @@ long get_long_le(const char *cp)
 	return ret;
 }
 
-void put_long_le(char *cp, long lval)
+void px_put_long_le(char *cp, long lval)
 {
 	*cp++ = lval & 0xff;
 	*cp++ = (lval >> 8) & 0xff;
@@ -55,7 +55,7 @@ void put_long_le(char *cp, long lval)
 /*
  * routine to change little endian short to host short
  */
-unsigned short int get_short_le(const char *cp)
+unsigned short int px_get_short_le(const char *cp)
 {
 	unsigned short int ret;
 	unsigned char *source = (unsigned char *)cp;
@@ -76,7 +76,7 @@ unsigned short int get_short_le(const char *cp)
  * datablockhead.addDataSize is negativ if the datablock
  * is empty.
  */
-short int get_short_le_s(const char *cp)
+short int px_get_short_le_s(const char *cp)
 {
 	short int ret;
 	unsigned char *source = (unsigned char *)cp;
@@ -90,13 +90,13 @@ short int get_short_le_s(const char *cp)
 	return ret;
 }
 
-void put_short_le(char *cp, short int sval)
+void px_put_short_le(char *cp, short int sval)
 {
 	*cp++ = sval & 0xff;
 	*cp++ = (sval >> 8) & 0xff;
 }
 
-double get_double_le(const char *cp)
+double px_get_double_le(const char *cp)
 {
 	double ret;
 	unsigned char *dp = (unsigned char *)&ret;
@@ -119,7 +119,7 @@ double get_double_le(const char *cp)
 	return ret;
 }
 
-void put_double_le(char *cp, double fval)
+void px_put_double_le(char *cp, double fval)
 {
 	unsigned char *dp = (unsigned char *)&fval;
 
@@ -141,7 +141,7 @@ void put_double_le(char *cp, double fval)
  * routine to change big endian long to host long
  * these functions are used read table data
  */
-long get_long_be(const char *cp)
+long px_get_long_be(const char *cp)
 {
 	int ret;
 	unsigned char *source = (unsigned char *)cp;
@@ -157,7 +157,7 @@ long get_long_be(const char *cp)
 	return ret;
 }
 
-void put_long_be(char *cp, long lval)
+void px_put_long_be(char *cp, long lval)
 {
 	*cp++ = (lval >> 24) & 0xff;
 	*cp++ = (lval >> 16) & 0xff;
@@ -168,7 +168,7 @@ void put_long_be(char *cp, long lval)
 /*
  * routine to change little endian short to host short
  */
-short int get_short_be(const char *cp)
+short int px_get_short_be(const char *cp)
 {
 	short int ret;
 	unsigned char *source = (unsigned char *)cp;
@@ -182,13 +182,13 @@ short int get_short_be(const char *cp)
 	return ret;
 }
 
-void put_short_be(char *cp, short int sval)
+void px_put_short_be(char *cp, short int sval)
 {
 	*cp++ = (sval >> 8) & 0xff;
 	*cp++ = sval & 0xff;
 }
 
-double get_double_be(const char *cp)
+double px_get_double_be(const char *cp)
 {
 	double ret;
 	unsigned char *dp = (unsigned char *)&ret;
@@ -211,7 +211,7 @@ double get_double_be(const char *cp)
 	return ret;
 }
 
-void put_double_be(char *cp, double fval)
+void px_put_double_be(char *cp, double fval)
 {
 	unsigned char *dp = (unsigned char *)&fval;
 
@@ -229,7 +229,7 @@ void put_double_be(char *cp, double fval)
 #endif
 }
 
-void copy_fill(char *dp, char *sp, int len)
+void px_copy_fill(char *dp, char *sp, int len)
 {
 	while (*sp && len > 0) {
 		*dp++ = *sp++;
@@ -239,7 +239,7 @@ void copy_fill(char *dp, char *sp, int len)
 		*dp++ = ' ';
 }
 
-void copy_crimp(char *dp, char *sp, int len)
+void px_copy_crimp(char *dp, char *sp, int len)
 {
 	while (len-- > 0) {
 		*dp++ = *sp++;
@@ -317,7 +317,7 @@ char *px_cur_date(char *cp)
 	return cp;
 }
 
-void hex_dump(FILE *outfp, char *p, int len) {
+void px_hex_dump(FILE *outfp, char *p, int len) {
 	int i;
 
 	if(NULL == p)

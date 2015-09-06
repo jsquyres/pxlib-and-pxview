@@ -314,7 +314,7 @@ static int build_primary_index(pxdoc_t *pxdoc) {
 	blocknumber = pxh->px_firstblock; /* Will be set to next block number */
 	while((blockcount < pxh->px_fileblocks) && (blocknumber > 0)) {
 		TDataBlock datablockhead;
-		if(get_datablock_head(pxdoc, pxs, blocknumber, &datablockhead) < 0) {
+		if(px_get_datablock_head(pxdoc, pxs, blocknumber, &datablockhead) < 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not get head of data block nr. %d."), blocknumber);
 			pxdoc->free(pxdoc, pindex);
 			return -1;
@@ -323,7 +323,7 @@ static int build_primary_index(pxdoc_t *pxdoc) {
 		 * data yet. */
 		pindex[blockcount].data = NULL;
 		pindex[blockcount].blocknumber = blocknumber;
-		pindex[blockcount].numrecords = (get_short_le((char *) &datablockhead.addDataSize)/pxh->px_recordsize)+1;
+		pindex[blockcount].numrecords = (px_get_short_le((char *) &datablockhead.addDataSize)/pxh->px_recordsize)+1;
 
 		numrecords += pindex[blockcount].numrecords;
 		if(pindex[blockcount].numrecords == 0) {
@@ -332,7 +332,7 @@ static int build_primary_index(pxdoc_t *pxdoc) {
 		}
 		pindex[blockcount].myblocknumber = 0;
 		pindex[blockcount].level = 1;
-		blocknumber = get_short_le((const char *) &datablockhead.nextBlock);
+		blocknumber = px_get_short_le((const char *) &datablockhead.nextBlock);
 		blockcount++;
 	}
 	/* Check if the number of records in the blocks sums up to number
@@ -350,7 +350,7 @@ static int build_primary_index(pxdoc_t *pxdoc) {
 		while(blocknumber > 0) {
 			TDataBlock datablockhead;
 //			fprintf(stderr, "next blocknumber after creating primary index: %d\n", blocknumber);
-			if(get_datablock_head(pxdoc, pxs, blocknumber, &datablockhead) < 0) {
+			if(px_get_datablock_head(pxdoc, pxs, blocknumber, &datablockhead) < 0) {
 				px_error(pxdoc, PX_RuntimeError, _("Could not get head of data block nr. %d."), blocknumber);
 				pxdoc->free(pxdoc, pindex);
 				return -1;
@@ -362,7 +362,7 @@ static int build_primary_index(pxdoc_t *pxdoc) {
 			pindex[blockcount].numrecords = (get_short_le((char *) &datablockhead.addDataSize)/pxh->px_recordsize)+1;
 			pindex[blockcount].myblocknumber = 0;
 			pindex[blockcount].level = 1;
-*/			blocknumber = get_short_le((const char *) &datablockhead.nextBlock);
+*/			blocknumber = px_get_short_le((const char *) &datablockhead.nextBlock);
 			blockcount++;
 		}
 	}
@@ -394,7 +394,7 @@ PX_open_stream(pxdoc_t *pxdoc, void *stream) {
 	pxdoc->px_stream->close = px_false;
 	pxdoc->px_stream->s.stream = stream;
 
-	if((pxdoc->px_head = get_px_head(pxdoc, pxs)) == NULL) {
+	if((pxdoc->px_head = px_get_head(pxdoc, pxs)) == NULL) {
 		px_error(pxdoc, PX_RuntimeError, _("Unable to get header."));
 		return -1;
 	}
@@ -442,7 +442,7 @@ PX_open_gsf(pxdoc_t *pxdoc, GsfInput *gsf) {
 	pxdoc->tell = px_tell;
 	pxdoc->write = px_write;
 
-	if((pxdoc->px_head = get_px_head(pxdoc, pxs)) == NULL) {
+	if((pxdoc->px_head = px_get_px_head(pxdoc, pxs)) == NULL) {
 		px_error(pxdoc, PX_RuntimeError, _("Unable to get header."));
 		return -1;
 	}
@@ -491,7 +491,7 @@ PX_open_fp(pxdoc_t *pxdoc, FILE *fp) {
 	pxdoc->tell = px_tell;
 	pxdoc->write = px_write;
 
-	if((pxdoc->px_head = get_px_head(pxdoc, pxs)) == NULL) {
+	if((pxdoc->px_head = px_get_head(pxdoc, pxs)) == NULL) {
 		px_error(pxdoc, PX_RuntimeError, _("Unable to get header."));
 		return -1;
 	}
@@ -672,7 +672,7 @@ PX_create_fp(pxdoc_t *pxdoc, pxfield_t *fields, int numfields, FILE *fp, int typ
 	pxdoc->tell = px_tell;
 	pxdoc->write = px_write;
 
-	if(put_px_head(pxdoc, pxh, pxs) < 0) {
+	if(px_put_head(pxdoc, pxh, pxs) < 0) {
 		px_error(pxdoc, PX_RuntimeError, _("Unable to put header."));
 		return -1;
 	}
@@ -743,7 +743,7 @@ PX_set_value(pxdoc_t *pxdoc, const char *name, float value) {
 		} else {
 			pxdoc->px_head->px_filetype = pxfFileTypIndexDB;
 		}
-		if(put_px_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
+		if(px_put_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
 			return -1;
 		}
 	} else if(strcmp(name, "codepage") == 0) {
@@ -752,7 +752,7 @@ PX_set_value(pxdoc_t *pxdoc, const char *name, float value) {
 			return -1;
 		}
 		pxdoc->px_head->px_doscodepage = (int) value;
-		if(put_px_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
+		if(px_put_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
 			return -1;
 		}
 	} else {
@@ -854,7 +854,7 @@ PX_set_parameter(pxdoc_t *pxdoc, const char *name, const char *value) {
 
 		pxdoc->px_head->px_tablename = px_strdup(pxdoc, value);
 		if(pxdoc->px_stream->mode & pxfFileWrite) {
-			if(put_px_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
+			if(px_put_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
 				return -1;
 			}
 		} else {
@@ -864,7 +864,7 @@ PX_set_parameter(pxdoc_t *pxdoc, const char *name, const char *value) {
 	} else if(strcmp(name, "password") == 0) {
 		pxdoc->px_head->px_encryption = px_passwd_checksum(value);
 		if(pxdoc->px_stream->mode & pxfFileWrite) {
-			if(put_px_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
+			if(px_put_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
 				return -1;
 			}
 		} else {
@@ -1309,10 +1309,10 @@ px_get_record_pos_with_index(pxdoc_t *pxdoc, int recno, int *deleted, pxdatabloc
 					return 0;
 				}
 
-				blocksize = get_short_le((char *) &datablock.addDataSize);
+				blocksize = px_get_short_le((char *) &datablock.addDataSize);
 
-				pxdbinfo->prev = get_short_le((char *) &datablock.prevBlock);
-				pxdbinfo->next = get_short_le((char *) &datablock.nextBlock);
+				pxdbinfo->prev = px_get_short_le((char *) &datablock.prevBlock);
+				pxdbinfo->next = px_get_short_le((char *) &datablock.nextBlock);
 				pxdbinfo->size = blocksize+pxh->px_recordsize;
 				pxdbinfo->numrecords = pxdbinfo->size/pxh->px_recordsize;
 				deleted = 0;
@@ -1344,7 +1344,7 @@ px_get_record_pos(pxdoc_t *pxdoc, int recno, int *deleted, pxdatablockinfo_t *px
 	while(!found && (blockcount < pxh->px_fileblocks) && (blocknumber > 0)) {
 		int datasize, blocksize;
 
-		if(get_datablock_head(pxdoc, pxdoc->px_stream, blocknumber, &datablock) < 0) {
+		if(px_get_datablock_head(pxdoc, pxdoc->px_stream, blocknumber, &datablock) < 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not get head of data block nr. %d."), blocknumber);
 			return 0;
 		}
@@ -1358,7 +1358,7 @@ px_get_record_pos(pxdoc_t *pxdoc, int recno, int *deleted, pxdatablockinfo_t *px
 		 * its blocksize is usually much bigger than the maximal data block
 		 * size. In the second case we set it -1.
 		 */
-		blocksize = get_short_le((char *) &datablock.addDataSize);
+		blocksize = px_get_short_le((char *) &datablock.addDataSize);
 		if(!*deleted)
 			datasize = blocksize; //get_short_le((char *) &datablock.addDataSize);
 		else
@@ -1384,7 +1384,7 @@ px_get_record_pos(pxdoc_t *pxdoc, int recno, int *deleted, pxdatablockinfo_t *px
 		if ((datasize+pxh->px_recordsize) > (pxh->px_maxtablesize*0x400-(int)sizeof(TDataBlock))) {
 //			printf("Size of data block %d as set in its header is to large: %d (%3.2f records)\n", get_short_le(&datablock.prevBlock), datasize, (float) datasize/pxh->px_recordsize + 1);
 			/* Set the number of the next block */
-			blocknumber = get_short_le((char *) &datablock.nextBlock);
+			blocknumber = px_get_short_le((char *) &datablock.nextBlock);
 		} else {
 			if(recno*pxh->px_recordsize <= datasize) {
 				found = 1;
@@ -1395,8 +1395,8 @@ px_get_record_pos(pxdoc_t *pxdoc, int recno, int *deleted, pxdatablockinfo_t *px
 					*deleted = 0;
 				}
 				if(pxdbinfo != NULL) {
-					pxdbinfo->prev = get_short_le((char *) &datablock.prevBlock);
-					pxdbinfo->next = get_short_le((char *) &datablock.nextBlock);
+					pxdbinfo->prev = px_get_short_le((char *) &datablock.prevBlock);
+					pxdbinfo->next = px_get_short_le((char *) &datablock.nextBlock);
 					pxdbinfo->number = blocknumber;
 					pxdbinfo->size = datasize+pxh->px_recordsize;
 					pxdbinfo->recno = recno;
@@ -1405,7 +1405,7 @@ px_get_record_pos(pxdoc_t *pxdoc, int recno, int *deleted, pxdatablockinfo_t *px
 					pxdbinfo->recordpos = pxdbinfo->blockpos + sizeof(TDataBlock) + recno*pxh->px_recordsize;
 				}
 			} else { /* skip rest of block */
-				blocknumber = get_short_le((char *) &datablock.nextBlock);
+				blocknumber = px_get_short_le((char *) &datablock.nextBlock);
 			}
 			recno -= (datasize/pxh->px_recordsize+1);
 		}
@@ -1467,10 +1467,10 @@ px_find_slot_with_index(pxdoc_t *pxdoc, pxdatablockinfo_t *pxdbinfo) {
 					return -1;
 				}
 
-				blocksize = get_short_le((char *) &datablock.addDataSize);
+				blocksize = px_get_short_le((char *) &datablock.addDataSize);
 
-				pxdbinfo->prev = get_short_le((char *) &datablock.prevBlock);
-				pxdbinfo->next = get_short_le((char *) &datablock.nextBlock);
+				pxdbinfo->prev = px_get_short_le((char *) &datablock.prevBlock);
+				pxdbinfo->next = px_get_short_le((char *) &datablock.nextBlock);
 				pxdbinfo->size = blocksize+pxh->px_recordsize;
 				pxdbinfo->numrecords = pxdbinfo->size/pxh->px_recordsize;
 				if(pindex_data[j].numrecords != pxdbinfo->numrecords) {
@@ -1512,7 +1512,7 @@ px_find_slot(pxdoc_t *pxdoc, pxdatablockinfo_t *pxdbinfo) {
 	while(!found && (blockcount < pxh->px_fileblocks) && (blocknumber > 0)) {
 		int datasize, blocksize;
 
-		if(get_datablock_head(pxdoc, pxdoc->px_stream, blocknumber, &datablock) < 0) {
+		if(px_get_datablock_head(pxdoc, pxdoc->px_stream, blocknumber, &datablock) < 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not get head of data block nr. %d."), blocknumber);
 			return -1;
 		}
@@ -1526,7 +1526,7 @@ px_find_slot(pxdoc_t *pxdoc, pxdatablockinfo_t *pxdbinfo) {
 		 * its blocksize is usually much bigger than the maximal data block
 		 * size. In the second case we set it -1.
 		 */
-		blocksize = get_short_le((char *) &datablock.addDataSize);
+		blocksize = px_get_short_le((char *) &datablock.addDataSize);
 		datasize = blocksize; //get_short_le((char *) &datablock.addDataSize);
 		if ((datasize+pxh->px_recordsize) < (pxh->px_maxtablesize*0x400-(int)sizeof(TDataBlock))) {
 			found = 1;
@@ -1534,8 +1534,8 @@ px_find_slot(pxdoc_t *pxdoc, pxdatablockinfo_t *pxdbinfo) {
 			 * then set the deleted flag to 0
 			 */
 			if(pxdbinfo != NULL) {
-				pxdbinfo->prev = get_short_le((char *) &datablock.prevBlock);
-				pxdbinfo->next = get_short_le((char *) &datablock.nextBlock);
+				pxdbinfo->prev = px_get_short_le((char *) &datablock.prevBlock);
+				pxdbinfo->next = px_get_short_le((char *) &datablock.nextBlock);
 				pxdbinfo->number = blocknumber;
 				pxdbinfo->size = datasize+pxh->px_recordsize;
 				pxdbinfo->recno = pxdbinfo->size/pxh->px_recordsize;
@@ -1867,7 +1867,7 @@ PX_put_recordn(pxdoc_t *pxdoc, char *data, int recpos) {
 	itmp = datablocknr;
 	while(datablocknr > pxh->px_fileblocks) {
 //		fprintf(stderr, "We need an new datablock\n");
-		itmp = put_px_datablock(pxdoc, pxh, pxh->px_lastblock, pxdoc->px_stream);
+		itmp = px_put_datablock(pxdoc, pxh, pxh->px_lastblock, pxdoc->px_stream);
 		if(itmp < 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not write new data block."));
 			return -1;
@@ -1908,7 +1908,7 @@ PX_put_recordn(pxdoc_t *pxdoc, char *data, int recpos) {
 		pxh->px_numrecords++;
 	}
 
-	put_px_head(pxdoc, pxh, pxdoc->px_stream);
+	px_put_head(pxdoc, pxh, pxdoc->px_stream);
 	return(pxdoc->last_position+1);
 }
 /* }}} */
@@ -2148,7 +2148,7 @@ PX_insert_record(pxdoc_t *pxdoc, pxval_t **dataptr) {
 	if(found == 0) {
 		pxpindex_t *pindex;
 
-		datablocknr = put_px_datablock(pxdoc, pxh, pxh->px_lastblock, pxdoc->px_stream);
+		datablocknr = px_put_datablock(pxdoc, pxh, pxh->px_lastblock, pxdoc->px_stream);
 		if(datablocknr < 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not write new data block."));
 			return -1;
@@ -2206,7 +2206,7 @@ PX_insert_record(pxdoc_t *pxdoc, pxval_t **dataptr) {
 	}
 	
 	pxh->px_numrecords++;
-	put_px_head(pxdoc, pxh, pxdoc->px_stream);
+	px_put_head(pxdoc, pxh, pxdoc->px_stream);
 	return(newrecpos);
 }
 /* }}} */
@@ -2274,13 +2274,13 @@ int px_delete_blobs(pxdoc_t *pxdoc, int recordpos) {
 			 * the extra 8 bytes. But this value seems to be alwasy 8 smaller
 			 * then the size at [leader+4].
 			 */
-			size = get_long_le(&data[leader+4]);
+			size = px_get_long_le(&data[leader+4]);
 			if(hsize == 17)
 				blobsize = size - 8;
 			else
 				blobsize = size;
-			index = get_long_le(&data[leader]) & 0x000000ff;
-			mod_nr = get_short_le(&data[leader+8]);
+			index = px_get_long_le(&data[leader]) & 0x000000ff;
+			mod_nr = px_get_short_le(&data[leader+8]);
 
 			if(blobsize <= 0) {
 				continue;
@@ -2297,7 +2297,7 @@ int px_delete_blobs(pxdoc_t *pxdoc, int recordpos) {
 				continue;
 			}
 
-			bloboffset = get_long_le(&data[leader]) & 0xffffff00;
+			bloboffset = px_get_long_le(&data[leader]) & 0xffffff00;
 			if(bloboffset == 0) {
 				continue;
 			}
@@ -2434,7 +2434,7 @@ PX_delete_record(pxdoc_t *pxdoc, int recno) {
 		ret = px_delete_data_from_block(pxdoc, pxh, datablocknr, tmppxdbinfo.recno, pxdoc->px_stream);
 		if(ret >= 0) {
 			pxh->px_numrecords--;
-			put_px_head(pxdoc, pxh, pxdoc->px_stream);
+			px_put_head(pxdoc, pxh, pxdoc->px_stream);
 
 			/* Update the primary index */
 			if(pxdoc->px_indexdata) {
@@ -2845,7 +2845,7 @@ PX_set_tablename(pxdoc_t *pxdoc, const char *tablename) {
 		pxdoc->free(pxdoc, pxdoc->px_head->px_tablename);
 
 	pxdoc->px_head->px_tablename = px_strdup(pxdoc, tablename);
-	if(put_px_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
+	if(px_put_head(pxdoc, pxdoc->px_head, pxdoc->px_stream) < 0) {
 		return -1;
 	}
 	return 0;
@@ -2903,7 +2903,7 @@ static int build_mb_block_list(pxblob_t *pxblob) {
 		}
 		blocklist[i].number = i;
 		blocklist[i].type = mbblockhead.type;
-		blocklist[i].numblocks = (int) (get_short_le((char *) &mbblockhead.numBlocks));
+		blocklist[i].numblocks = (int) (px_get_short_le((char *) &mbblockhead.numBlocks));
 //		fprintf(stderr, "Block %d is of type %d\n", i, blocklist[i].type);
 		if(blocklist[i].type == 3) {
 			int j;
@@ -2982,7 +2982,7 @@ PX_open_blob_fp(pxblob_t *pxblob, FILE *fp) {
 	pxblob->tell = px_mb_tell;
 	pxblob->write = px_mb_write;
 
-	if((pxblob->mb_head = get_mb_head(pxblob, pxs)) == NULL) {
+	if((pxblob->mb_head = px_get_mb_head(pxblob, pxs)) == NULL) {
 		px_error(pxdoc, PX_RuntimeError, _("Unable to get header of blob file."));
 		return -1;
 	}
@@ -3051,7 +3051,7 @@ PX_create_blob_fp(pxblob_t *pxblob, FILE *fp) {
 		return -1;
 	}
 	memset(mbh, 0, sizeof(mbhead_t));
-	if(put_mb_head(pxblob, mbh, pxs) < 0) {
+	if(px_put_mb_head(pxblob, mbh, pxs) < 0) {
 		px_error(pxdoc, PX_RuntimeError, _("Unable to put header."));
 		return -1;
 	}
@@ -3254,13 +3254,13 @@ _px_read_blobdata(pxblob_t *pxblob, const char *data, int len, int hsize, int *m
 	size_t size, offset, mod_nr, index;
 	int leader = len - 10;
 
-	size = get_long_le(&data[leader+4]);
+	size = px_get_long_le(&data[leader+4]);
 	if(hsize == 17)
 		*blobsize = size - 8;
 	else
 		*blobsize = size;
-	index = get_long_le(&data[leader]) & 0x000000ff;
-	*mod = mod_nr = get_short_le(&data[leader+8]);
+	index = px_get_long_le(&data[leader]) & 0x000000ff;
+	*mod = mod_nr = px_get_short_le(&data[leader+8]);
 /*	fprintf(stderr, "index=%ld ", index); */
 /*	fprintf(stderr, "size=%ld ", size); */
 /*	fprintf(stderr, "mod_nr=%d \n", mod_nr); */
@@ -3282,7 +3282,7 @@ _px_read_blobdata(pxblob_t *pxblob, const char *data, int len, int hsize, int *m
 		}
 		memcpy(blobdata, data, *blobsize);
 	} else {
-		offset = get_long_le(&data[leader]) & 0xffffff00;
+		offset = px_get_long_le(&data[leader]) & 0xffffff00;
 		if(offset == 0) {
 			*blobsize = 0;
 			return(NULL);
@@ -3318,8 +3318,8 @@ _px_read_blobdata(pxblob_t *pxblob, const char *data, int len, int hsize, int *m
 				px_error(pxdoc, PX_RuntimeError, _("Could not read remaining head of single data block."));
 				return NULL;
 			}
-			if(size != get_long_le((const char *) &head[0])) {
-				px_error(pxdoc, PX_RuntimeError, _("Blob does not have expected size (%d != %d)."), size, get_long_le((const char *)&head[0]));
+			if(size != px_get_long_le((const char *) &head[0])) {
+				px_error(pxdoc, PX_RuntimeError, _("Blob does not have expected size (%d != %d)."), size, px_get_long_le((const char *)&head[0]));
 				return(NULL);
 			}
 			/* We may check for identical modificatio number as well, if it
@@ -3508,7 +3508,7 @@ PX_get_data_double(pxdoc_t *pxdoc, char *data, int len, double *value) {
 		*value = 0;
 		return 0;
 	}
-	*value = get_double_be(tmp); // *((double *)tmp);
+	*value = px_get_double_be(tmp); // *((double *)tmp);
 	return 1;
 }
 /* }}} */
@@ -3528,7 +3528,7 @@ PX_get_data_long(pxdoc_t *pxdoc, char *data, int len, long *value) {
 		*value = 0;
 		return 0;
 	}
-	*value = get_long_be(tmp);
+	*value = px_get_long_be(tmp);
 	return 1;
 }
 /* }}} */
@@ -3548,7 +3548,7 @@ PX_get_data_short(pxdoc_t *pxdoc, char *data, int len, short int *value) {
 		*value = 0;
 		return 0;
 	}
-	*value = get_short_be(tmp);
+	*value = px_get_short_be(tmp);
 	return 1;
 }
 /* }}} */
@@ -3662,13 +3662,13 @@ _px_get_data_blob(pxdoc_t *pxdoc, const char *data, int len, int hsize, int *mod
 	 * the extra 8 bytes. But this value seems to be alwasy 8 smaller
 	 * then the size at [leader+4].
 	 */
-	size = get_long_le(&data[leader+4]);
+	size = px_get_long_le(&data[leader+4]);
 	if(hsize == 17)
 		*blobsize = size - 8;
 	else
 		*blobsize = size;
-	index = get_long_le(&data[leader]) & 0x000000ff;
-	*mod = mod_nr = get_short_le(&data[leader+8]);
+	index = px_get_long_le(&data[leader]) & 0x000000ff;
+	*mod = mod_nr = px_get_short_le(&data[leader+8]);
 /*	fprintf(stderr, "index=%ld ", index); */
 /*	fprintf(stderr, "size=%ld ", size); */
 /*	fprintf(stderr, "mod_nr=%d \n", mod_nr); */
@@ -3699,7 +3699,7 @@ _px_get_data_blob(pxdoc_t *pxdoc, const char *data, int len, int hsize, int *mod
 		return -1;
 	}
 
-	offset = get_long_le(&data[leader]) & 0xffffff00;
+	offset = px_get_long_le(&data[leader]) & 0xffffff00;
 	if(offset == 0) {
 		px_error(pxdoc, PX_Warning, _("Offset in blob file is unexpectedly zero."));
 		*blobsize = 0;
@@ -3743,8 +3743,8 @@ _px_get_data_blob(pxdoc_t *pxdoc, const char *data, int len, int hsize, int *mod
 			*value = NULL;
 			return -1;
 		}
-		if(size != get_long_le((char*) &head[0])) {
-			px_error(pxdoc, PX_RuntimeError, _("Blob does not have expected size (%d != %d)."), size, get_long_le((char *) &head[0]));
+		if(size != px_get_long_le((char*) &head[0])) {
+			px_error(pxdoc, PX_RuntimeError, _("Blob does not have expected size (%d != %d)."), size, px_get_long_le((char *) &head[0]));
 			*value = NULL;
 			return -1;
 		}
@@ -3907,7 +3907,7 @@ PX_put_data_double(pxdoc_t *pxdoc, char *data, int len, double value) {
 	if(len == 0) {
 		memset(data, 0, 8);
 	} else {
-		put_double_be(data, value);
+		px_put_double_be(data, value);
 		if(value >= 0) {
 			data[0] |= 0x80;
 		} else {
@@ -3928,7 +3928,7 @@ PX_put_data_long(pxdoc_t *pxdoc, char *data, int len, int value) {
 	if(len == 0) {
 		memset(data, 0, 4);
 	} else {
-		put_long_be(data, value);
+		px_put_long_be(data, value);
 		if(value >= 0) {
 			data[0] |= 0x80;
 		} else {
@@ -3947,7 +3947,7 @@ PX_put_data_short(pxdoc_t *pxdoc, char *data, int len, short int value) {
 	if(len == 0) {
 		memset(data, 0, 2);
 	} else {
-		put_short_be(data, value);
+		px_put_short_be(data, value);
 		if(value >= 0) {
 			data[0] |= 0x80;
 		} else {
@@ -4091,9 +4091,9 @@ _px_put_data_blob(pxdoc_t *pxdoc, const char *data, int len, char *value, int va
 
 			/* Fill up the structure that precede the blob in the mb file. */
 			mbbh.type = 2;
-			put_short_le((char *) &mbbh.numBlocks, used_blocks);
-			put_long_le((char *) &mbbh.blobLen, valuelen);
-			put_short_le((char *) &mbbh.modNr, ++pxblob->mb_head->modcount);
+			px_put_short_le((char *) &mbbh.numBlocks, used_blocks);
+			px_put_long_le((char *) &mbbh.blobLen, valuelen);
+			px_put_short_le((char *) &mbbh.modNr, ++pxblob->mb_head->modcount);
 
 			/* Write the header of the blob */
 			if(pxblob->write(pxblob, pxs, sizeof(TMbBlockHeader2), &mbbh) < 1) {
@@ -4105,8 +4105,8 @@ _px_put_data_blob(pxdoc_t *pxdoc, const char *data, int len, char *value, int va
 				px_error(pxdoc, PX_RuntimeError, _("Could not write blob data to file."));
 				return -1;
 			}
-			put_long_le((char *) &data[leader], (pxblob->used_datablocks+1)*4096 + 0xff);
-			put_short_le((char *) &data[leader+8], pxblob->mb_head->modcount);
+			px_put_long_le((char *) &data[leader], (pxblob->used_datablocks+1)*4096 + 0xff);
+			px_put_short_le((char *) &data[leader+8], pxblob->mb_head->modcount);
 			pxblob->used_datablocks += used_blocks;
 		} else { /* Block of type 3 */
 			TMbBlockHeader3Table mbbhtab;
@@ -4129,7 +4129,7 @@ _px_put_data_blob(pxdoc_t *pxdoc, const char *data, int len, char *value, int va
 
 				memset(&mbbh, 0, sizeof(TMbBlockHeader3));
 				mbbh.type = 3;
-				put_short_le((char *) &mbbh.numBlocks, 1);
+				px_put_short_le((char *) &mbbh.numBlocks, 1);
 				/* Write the header of the blob */
 				if(pxblob->write(pxblob, pxs, sizeof(TMbBlockHeader3), &mbbh) < 1) {
 					px_error(pxdoc, PX_RuntimeError, _("Could not write header of blob data to file."));
@@ -4185,7 +4185,7 @@ _px_put_data_blob(pxdoc_t *pxdoc, const char *data, int len, char *value, int va
 			 * Uwe 17.12.2004: Tried (pxblob->mb_head->modcount+1) instead of
 			 * (pxblob->subblockblobcount+1)
 			 */
-			put_short_le((char *) &mbbhtab.modNr, pxblob->mb_head->modcount+1);
+			px_put_short_le((char *) &mbbhtab.modNr, pxblob->mb_head->modcount+1);
 			mbbhtab.lengthmod = (valuelen % 16) == 0 ? 16 : (valuelen % 16);
 			/* Write the blob table entry */
 			if(pxblob->write(pxblob, pxs, sizeof(TMbBlockHeader3Table), &mbbhtab) < 1) {
@@ -4204,14 +4204,14 @@ _px_put_data_blob(pxdoc_t *pxdoc, const char *data, int len, char *value, int va
 			pxblob->subblockfree -= mbbhtab.length;
 			pxblob->subblockblobcount++;
 
-			put_long_le((char *) &data[leader], (pxblob->subblockoffset)*4096 + j);
-			put_short_le((char *) &data[leader+8], ++pxblob->mb_head->modcount);
+			px_put_long_le((char *) &data[leader], (pxblob->subblockoffset)*4096 + j);
+			px_put_short_le((char *) &data[leader+8], ++pxblob->mb_head->modcount);
 		}
 	} else { /* blob fits in db file */
-		put_long_le((char *) &data[leader], 0);
-		put_short_le((char *) &data[leader+8], 0);
+		px_put_long_le((char *) &data[leader], 0);
+		px_put_short_le((char *) &data[leader+8], 0);
 	}
-	put_long_le((char *) &data[leader+4], valuelen);
+	px_put_long_le((char *) &data[leader+4], valuelen);
 
 	/* Write the info about the blob into the db file.
 	 * The field value always starts with the blob data followed by a
