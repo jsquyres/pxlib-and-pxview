@@ -505,7 +505,7 @@ int px_put_head(pxdoc_t *pxdoc, pxhead_t *pxh, pxstream_t *pxs) {
 		}
 
 		/* write sortOrderID */
-		if(pxdoc->write(pxdoc, pxs, 8, "ANSIINTL") < 0) {
+		if(pxdoc->write(pxdoc, pxs, 8, "ANSIINTL") == 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not write field numbers."));
 			return -1;
 		}
@@ -517,7 +517,7 @@ int px_put_head(pxdoc_t *pxdoc, pxhead_t *pxh, pxstream_t *pxs) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not fill header with zeros."));
 			return -1;
 		}
-		if(pxdoc->write(pxdoc, pxs, 1, "\0") < 0) {
+		if(pxdoc->write(pxdoc, pxs, 1, "\0") == 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not fill header with zeros."));
 			return -1;
 		}

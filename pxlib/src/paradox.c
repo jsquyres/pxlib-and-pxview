@@ -2497,7 +2497,7 @@ PX_pack(pxdoc_t *pxdoc) {
 				recordpos = blockpos + sizeof(TDataBlock) + i*pxh->px_recordsize;
 				recordoutpos = blockoutpos + sizeof(TDataBlock) + nout*pxh->px_recordsize;
 				if(recordpos != recordoutpos)
-					fprintf(stdout, "copy record from 0x%X (block %d) to 0x%X (block %d)\n", recordpos, j, recordoutpos, jout);
+					fprintf(stdout, "copy record from 0x%lX (block %d) to 0x%lX (block %d)\n", recordpos, j, recordoutpos, jout);
 				nout++;
 				if(nout > recsperblock) {
 					jout++;
@@ -2896,7 +2896,7 @@ static int build_mb_block_list(pxblob_t *pxblob) {
 			return -1;
 		}
 
-		if(pxblob->read(pxblob, pxs, sizeof(TMbBlockHeader3), &mbblockhead) < 0) {
+		if(pxblob->read(pxblob, pxs, sizeof(TMbBlockHeader3), &mbblockhead) == 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not read header of block in blob file."));
 			pxdoc->free(pxdoc, blocklist);
 			return -1;
@@ -2912,7 +2912,7 @@ static int build_mb_block_list(pxblob_t *pxblob) {
 
 			for(j=0; j<64; j++) {
 				TMbBlockHeader3Table mbbhtab;
-				if(pxblob->read(pxblob, pxs, sizeof(TMbBlockHeader3Table), &mbbhtab) < 0) {
+				if(pxblob->read(pxblob, pxs, sizeof(TMbBlockHeader3Table), &mbbhtab) == 0) {
 					px_error(pxdoc, PX_RuntimeError, _("Could not read blob pointer."));
 					return -1;
 				}
@@ -4161,7 +4161,7 @@ _px_put_data_blob(pxdoc_t *pxdoc, const char *data, int len, char *value, int va
 				return -1;
 			}
 			for(j=63; j>=0; j--) {
-				if(pxblob->read(pxblob, pxblob->mb_stream, sizeof(TMbBlockHeader3Table), &mbbhtab) < 0) {
+				if(pxblob->read(pxblob, pxblob->mb_stream, sizeof(TMbBlockHeader3Table), &mbbhtab) == 0) {
 					px_error(pxdoc, PX_RuntimeError, _("Could not read entry in index table of type 3 block."));
 					return -1;
 				}
