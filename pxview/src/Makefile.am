@@ -10,5 +10,4 @@ pxview_LDADD = \
         $(top_builddir)/pxlib/src/libpx.la \
         $(GSF_LIBDIR) \
         $(GSF_LIBS) \
-        $(SQLITE_LIBS) \
-        $(INTLLIBS)
+        $(SQLITE_LIBS)
