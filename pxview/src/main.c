@@ -1600,7 +1600,7 @@ int main(int argc, char *argv[]) {
 							case pxfBCD: {
 								char *value;
 						//		px_hex_dump(outfp, &data[offset], pxf->px_flen);
-								if(0 < PX_get_data_bcd(pxdoc, &data[offset], pxf->px_fdc, &value)) {
+								if(0 < PX_get_data_bcd(pxdoc, (unsigned char*) &data[offset], pxf->px_fdc, &value)) {
 									fprintf(outfp, "%s", value);
 									pxdoc->free(pxdoc, value);
 								}
@@ -1982,7 +1982,7 @@ int main(int argc, char *argv[]) {
 								case pxfBCD: {
 									char *value;
 									int ret;
-									if(0 < (ret = PX_get_data_bcd(pxdoc, &data[offset], pxf->px_fdc, &value))) {
+									if(0 < (ret = PX_get_data_bcd(pxdoc, (unsigned char*) &data[offset], pxf->px_fdc, &value))) {
 										str_buffer_print(pxdoc, sbuf, "%s", value);
 										pxdoc->free(pxdoc, value);
 									} else if(ret == 0) {
@@ -2245,7 +2245,7 @@ int main(int argc, char *argv[]) {
 							}
 							case pxfBCD: {
 								char *value;
-								if(0 < PX_get_data_bcd(pxdoc, &data[offset], pxf->px_fdc, &value)) {
+								if(0 < PX_get_data_bcd(pxdoc, (unsigned char*) &data[offset], pxf->px_fdc, &value)) {
 									fprintf(outfp, "%s", value);
 									pxdoc->free(pxdoc, value);
 								}
@@ -2582,7 +2582,7 @@ int main(int argc, char *argv[]) {
 									case pxfBCD: {
 										char *value;
 										int ret;
-										if(0 < (ret = PX_get_data_bcd(pxdoc, &data[offset], pxf->px_fdc, &value))) {
+										if(0 < (ret = PX_get_data_bcd(pxdoc, (unsigned char*) &data[offset], pxf->px_fdc, &value))) {
 											fprintf(outfp, "%s", value);
 											pxdoc->free(pxdoc, value);
 										} else if(ret == 0) {
@@ -2813,7 +2813,7 @@ int main(int argc, char *argv[]) {
 									case pxfBCD: {
 										char *value;
 										int ret;
-										if(0 < (ret = PX_get_data_bcd(pxdoc, &data[offset], pxf->px_fdc, &value))) {
+										if(0 < (ret = PX_get_data_bcd(pxdoc, (unsigned char*) &data[offset], pxf->px_fdc, &value))) {
 											fprintf(outfp, "%s", value);
 											pxdoc->free(pxdoc, value);
 										} else if(ret == 0) {
