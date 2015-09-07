@@ -1105,7 +1105,7 @@ int main(int argc, char *argv[]) {
 		fprintf(outfp, _("Write protected:         %d\n"), pxh->px_writeprotected);
 		PX_get_value(pxdoc, "codepage", &number);
 		fprintf(outfp, _("Code Page:               %d (0x%X)\n"), (int) number, (int) number);
-		fprintf(outfp, _("Encryption:              0x%X\n"), pxh->px_encryption);
+		fprintf(outfp, _("Encryption:              0x%lX\n"), pxh->px_encryption);
 		localtime_r((time_t *) &(pxh->px_fileupdatetime), &time_tm);
 		fprintf(outfp, _("Update time:             %d.%d.%d %d:%02d:%02d (%d)\n"), time_tm.tm_mday, time_tm.tm_mon+1, time_tm.tm_year+1900, time_tm.tm_hour, time_tm.tm_min, time_tm.tm_sec, pxh->px_fileupdatetime);
 		if(verbose) {
@@ -2912,7 +2912,7 @@ int main(int argc, char *argv[]) {
 							index = px_get_long_le(&data[offset+pxf->px_flen-10]) & 0x000000ff;
 							mod_nr = px_get_short_le(&data[offset+pxf->px_flen-10+8]);
 							boffset = px_get_long_le(&data[offset+pxf->px_flen-10]) & 0xffffff00;
-							fprintf(outfp, "size=%ld, index=%ld, mod_nr=%d, offset=%ld\n", size, index, mod_nr, boffset);
+							fprintf(outfp, "size=%ld, index=%ld, mod_nr=%ld, offset=%ld\n", size, index, mod_nr, boffset);
 						}
 					}
 
