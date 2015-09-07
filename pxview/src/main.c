@@ -2190,7 +2190,7 @@ int main(int argc, char *argv[]) {
 								double value;
 								if(0 < PX_get_data_double(pxdoc, &data[offset], pxf->px_flen, &value)) {
 									char *str = PX_timestamp2string(pxdoc, value, "Y-m-d H:i:s");
-									fprintf(outfp, str);
+									fprintf(outfp, "%s", str);
 									pxdoc->free(pxdoc, str);
 								} 
 								break;
@@ -2498,7 +2498,7 @@ int main(int argc, char *argv[]) {
 										double value;
 										if(0 < PX_get_data_double(pxdoc, &data[offset], pxf->px_flen, &value)) {
 											char *str = PX_timestamp2string(pxdoc, value, "Y-m-d H:i:s");
-											fprintf(outfp, str);
+											fprintf(outfp, "%s", str);
 											pxdoc->free(pxdoc, str);
 										} else {
 											fprintf(outfp, "\\N");
