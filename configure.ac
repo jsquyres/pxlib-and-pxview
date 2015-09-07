@@ -213,6 +213,32 @@ AC_SUBST(PX_HAVE_GSF)
 AC_DEFINE_UNQUOTED(PX_HAVE_GSF, [$PX_HAVE_GSF], [Do we have GSF or not?])
 
 dnl
+dnl SQLite3
+dnl
+
+AC_ARG_WITH(sqlite3,
+	AC_HELP_STRING([--with-sqlite3],
+                       [Enable / disable SQLite3 support (default: enabled)]))
+SQLITE_LIBS=
+HAVE_SQLITE3=0
+AS_IF([test "$with_sqlite3" != "no"],
+    [AC_CHECK_HEADER([sqlite3.h],
+        [AC_CHECK_LIB(sqlite3, sqlite3_open,
+                      [HAVE_SQLITE3=1
+                       SQLITE_LIBS=-lsqlite3])
+        ])
+    ],
+    [AC_MSG_CHECKING([for SQLite3])
+     AC_MSG_RESULT([skipped (via --without-sqlite3)])
+    ])
+AS_IF([test "$with_sqlite3" = "yes" && test $HAVE_SQLITE3 -eq 0],
+      [AC_MSG_WARN([SQLite3 support requested but not found])
+       AC_MSG_ERROR([Cannot continue])])
+AC_DEFINE_UNQUOTED(HAVE_SQLITE3, [$HAVE_SQLITE3],
+                   [Whether we have SQLite3 support or not])
+AC_SUBST(SQLITE_LIBS)
+
+dnl
 dnl Docbook
 dnl
 

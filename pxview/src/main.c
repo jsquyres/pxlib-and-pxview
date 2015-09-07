@@ -29,8 +29,8 @@
 #include <paradox-mp.h>
 #endif
 
-#ifdef HAVE_SQLITE
-#include <sqlite.h>
+#if HAVE_SQLITE3
+#include <sqlite3.h>
 #endif
 
 #ifdef ENABLE_NLS
@@ -385,9 +385,9 @@ void usage(char *progname) {
 	} else if(!strcmp(progname, "px2html")) {
 		printf(_("%s reads a paradox file and outputs the file in HTML format."), progname);
 	} else if(!strcmp(progname, "px2sqlite")) {
-		printf(_("%s reads a paradox file and writes the output into a sqlite database."), progname);
+		printf(_("%s reads a paradox file and writes the output into a sqlite3 database."), progname);
 	} else {
-		printf(_("%s reads a paradox file and outputs information about the file\nor dumps the content in CSV, HTML, SQL or sqlite format."), progname);
+		printf(_("%s reads a paradox file and outputs information about the file\nor dumps the content in CSV, HTML, SQL or sqlite3 format."), progname);
 	}
 	printf("\n\n");
 	printf(_("Usage: %s [OPTIONS] FILE"), progname);
@@ -417,8 +417,8 @@ void usage(char *progname) {
 		printf("\n");
 		printf(_("  -s, --sql           dump records in SQL format."));
 		printf("\n");
-#ifdef HAVE_SQLITE
-		printf(_("  -q, --sqlite        dump records into sqlite database."));
+#if HAVE_SQLITE3
+		printf(_("  -q, --sqlite        dump records into sqlite3 database."));
 		printf("\n");
 #endif
 		printf(_("  -x, --html          dump records in HTML format."));
@@ -467,7 +467,7 @@ void usage(char *progname) {
 
 	if(!strcmp(progname, "px2sql") || !strcmp(progname, "pxview") || !strcmp(progname, "px2sqlite")) {
 		printf("\n");
-		printf(_("Options for sql and sqlite ouput:"));
+		printf(_("Options for sql and sqlite3 ouput:"));
 		printf("\n");
 		printf(_("  --tablename=NAME    overwrite name of database table."));
 		printf("\n");
@@ -510,7 +510,7 @@ void usage(char *progname) {
 		printf("\n\n");
 	}
 	if(!strcmp(progname, "pxview")) {
-		printf(_("The option --fields will only affect csv, html, sql and sqlite output."));
+		printf(_("The option --fields will only affect csv, html, sql and sqlite3 output."));
 		printf("\n\n");
 	}
 
@@ -518,7 +518,7 @@ void usage(char *progname) {
 	printf(_("csv")); printf(" ");
 	printf(_("html")); printf(" ");
 	printf(_("sql")); printf(" ");
-#ifdef HAVE_SQLITE
+#if HAVE_SQLITE3
 	printf(_("sqlite")); printf(" ");
 #endif
 	printf("\n\n");
@@ -566,7 +566,7 @@ int main(int argc, char *argv[]) {
 	int outputhtml = 0;
 	int outputinfo = 0;
 	int outputsql = 0;
-	int outputsqlite = 0;
+	int outputsqlite3 = 0;
 	int outputschema = 0;
 	int outputdebug = 0;
 	int deletetable = 0;
@@ -678,8 +678,8 @@ int main(int argc, char *argv[]) {
 				} else if(!strcmp(optarg, "sql")) {
 					outputsql = 1;
 				} else if(!strcmp(optarg, "sqlite")) {
-#ifdef HAVE_SQLITE
-					outputsqlite = 1;
+#if HAVE_SQLITE3
+					outputsqlite3 = 1;
 #else
 					fprintf(stderr, _("No sqlite support available."));
 					fprintf(stderr, "\n");
@@ -817,10 +817,10 @@ int main(int argc, char *argv[]) {
 				outputhtml = 1;
 				break;
 			case 'q':
-#ifdef HAVE_SQLITE
-				outputsqlite = 1;
+#if HAVE_SQLITE3
+				outputsqlite3 = 1;
 #else
-				printf(_("No sqlite support available."));
+				printf(_("No sqlite3 support available."));
 				exit(1);
 #endif
 				break;
@@ -854,34 +854,34 @@ int main(int argc, char *argv[]) {
 		outputcsv = 0;
 		outputschema = 0;
 		outputsql = 1;
-		outputsqlite = 0;
+		outputsqlite3 = 0;
 		outputhtml = 0;
 	} else if(!strcmp(progname, "px2csv")) {
 		outputinfo = 0;
 		outputcsv = 1;
 		outputschema = 0;
 		outputsql = 0;
-		outputsqlite = 0;
+		outputsqlite3 = 0;
 		outputhtml = 0;
 	} else if(!strcmp(progname, "px2html")) {
 		outputinfo = 0;
 		outputcsv = 0;
 		outputschema = 0;
 		outputsql = 0;
-		outputsqlite = 0;
+		outputsqlite3 = 0;
 		outputhtml = 1;
 	} else if(!strcmp(progname, "px2sqlite")) {
 		outputinfo = 0;
 		outputcsv = 0;
 		outputschema = 0;
 		outputsql = 0;
-		outputsqlite = 1;
+		outputsqlite3 = 1;
 		outputhtml = 0;
 	}
 	/* }}} */
 
 	/* if none the output modes is selected then display info */
-	if(outputinfo == 0 && outputcsv == 0 && outputschema == 0 && outputsql == 0 && outputdebug == 0 && outputhtml == 0 && outputsqlite == 0)
+	if(outputinfo == 0 && outputcsv == 0 && outputschema == 0 && outputsql == 0 && outputdebug == 0 && outputhtml == 0 && outputsqlite3 == 0)
 		outputinfo = 1;
 
 	/* Set default values for timestamp, time, date format if it was
@@ -897,15 +897,15 @@ int main(int argc, char *argv[]) {
 	/* Create output file {{{
 	 */
 	if((outputfile == NULL) || !strcmp(outputfile, "-")) {
-		if(outputsqlite) {
-			fprintf(stderr, _("sqlite database cannot be written to stdout."));
+		if(outputsqlite3) {
+			fprintf(stderr, _("sqlite3 database cannot be written to stdout."));
 			fprintf(stderr, "\n");
 			exit(1);
 		} else {
 			outfp = stdout;
 		}
 	} else {
-		if(!outputsqlite) {
+		if(!outputsqlite3) {
 			outfp = fopen(outputfile, "w");
 			if(outfp == NULL) {
 				fprintf(stderr, _("Could not open output file."));
@@ -1657,12 +1657,12 @@ int main(int argc, char *argv[]) {
 	}
 	/* }}} */
 
-#ifdef HAVE_SQLITE
-	/* Output data into sqlite database {{{
+#if HAVE_SQLITE3
+	/* Output data into sqlite3 database {{{
 	 */
-	if(outputsqlite) {
+	if(outputsqlite3) {
 		int numrecords;
-		sqlite *sql;
+		sqlite3 *sql;
 		struct str_buffer *sbuf;
 		char *sqlerror;
 
@@ -1690,7 +1690,8 @@ int main(int argc, char *argv[]) {
 			exit(1);
 		}
 
-		if((sql = sqlite_open(outputfile, 0, NULL)) == NULL) {
+		sqlite3_open(outputfile, &sql);
+		if(sql == NULL) {
 			if(selectedfields)
 				pxdoc->free(pxdoc, selectedfields);
 			PX_close(pxdoc);
@@ -1700,9 +1701,9 @@ int main(int argc, char *argv[]) {
 		/* check if existing table shall be delete */
 		if(deletetable) {
 			str_buffer_print(pxdoc, sbuf, "DROP TABLE %s;\n", tablename);
-			if(SQLITE_OK != sqlite_exec(sql, str_buffer_get(pxdoc, sbuf), NULL, NULL, &sqlerror)) {
+			if(SQLITE_OK != sqlite3_exec(sql, str_buffer_get(pxdoc, sbuf), NULL, NULL, &sqlerror)) {
 				fprintf(stderr, "%s\n", sqlerror);
-				sqlite_close(sql);
+				sqlite3_close(sql);
 				str_buffer_delete(pxdoc, sbuf);
 				pxdoc->free(pxdoc, data);
 				if(selectedfields)
@@ -1776,8 +1777,8 @@ int main(int argc, char *argv[]) {
 			}
 			str_buffer_print(pxdoc, sbuf, ");");
 
-			if(SQLITE_OK != sqlite_exec(sql, str_buffer_get(pxdoc, sbuf), NULL, NULL, &sqlerror)) {
-				sqlite_close(sql);
+			if(SQLITE_OK != sqlite3_exec(sql, str_buffer_get(pxdoc, sbuf), NULL, NULL, &sqlerror)) {
+				sqlite3_close(sql);
 				fprintf(stderr, "%s\n", sqlerror);
 				str_buffer_delete(pxdoc, sbuf);
 				pxdoc->free(pxdoc, data);
@@ -1794,8 +1795,8 @@ int main(int argc, char *argv[]) {
 					strrep(pxf->px_fname, ' ', '_');
 					str_buffer_clear(pxdoc, sbuf);
 					str_buffer_print(pxdoc, sbuf, "CREATE INDEX %s_%s_index on %s (%s);", tablename, pxf->px_fname, tablename, pxf->px_fname);
-					if(SQLITE_OK != sqlite_exec(sql, str_buffer_get(pxdoc, sbuf), NULL, NULL, &sqlerror)) {
-						sqlite_close(sql);
+					if(SQLITE_OK != sqlite3_exec(sql, str_buffer_get(pxdoc, sbuf), NULL, NULL, &sqlerror)) {
+						sqlite3_close(sql);
 						fprintf(stderr, "%s\n", sqlerror);
 						str_buffer_delete(pxdoc, sbuf);
 						pxdoc->free(pxdoc, data);
@@ -2004,8 +2005,8 @@ int main(int argc, char *argv[]) {
 					fprintf(stderr, _("Couldn't get record number %d\n"), j);
 				}
 
-				if(SQLITE_OK != sqlite_exec(sql, str_buffer_get(pxdoc, sbuf), NULL, NULL, &sqlerror)) {
-					sqlite_close(sql);
+				if(SQLITE_OK != sqlite3_exec(sql, str_buffer_get(pxdoc, sbuf), NULL, NULL, &sqlerror)) {
+					sqlite3_close(sql);
 					fprintf(stderr, "%s\n", sqlerror);
 					str_buffer_delete(pxdoc, sbuf);
 					pxdoc->free(pxdoc, data);
@@ -2019,7 +2020,7 @@ int main(int argc, char *argv[]) {
 		str_buffer_delete(pxdoc, sbuf);
 		pxdoc->free(pxdoc, data);
 
-		sqlite_close(sql);
+		sqlite3_close(sql);
 	}
 	/* }}} */
 #endif
