@@ -65,30 +65,9 @@ dnl AC_SUBST(GETTEXT_PACKAGE)
 dnl AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", GETTEXT_PACKAGE)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
 AC_C_BIGENDIAN
-AC_STRUCT_TM
 
-dnl Checks for header files.
-AC_HEADER_DIRENT
-AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h unistd.h ctype.h dirent.h errno.h malloc.h)
-AC_CHECK_HEADERS(stdbool.h stdarg.h sys/stat.h sys/types.h time.h)
-AC_CHECK_HEADERS(ieeefp.h nan.h math.h fp_class.h float.h)
-AC_CHECK_HEADERS(stdlib.h sys/socket.h netinet/in.h arpa/inet.h)
-AC_CHECK_HEADERS(netdb.h sys/time.h sys/select.h sys/mman.h)
 AC_CHECK_HEADERS(libintl.h)
-
-dnl Checks for library functions.
-AC_FUNC_STRFTIME
-AC_CHECK_FUNCS(strdup strndup strerror snprintf)
-AC_CHECK_FUNCS(finite isnand fp_class class fpclass)
-AC_CHECK_FUNCS(strftime localtime)
-
-dnl Checks for inet libraries:
-AC_CHECK_FUNC(gethostent, , AC_CHECK_LIB(nsl, gethostent))
-AC_CHECK_FUNC(setsockopt, , AC_CHECK_LIB(socket, setsockopt))
-AC_CHECK_FUNC(connect, , AC_CHECK_LIB(inet, connect))
 
 dnl
 dnl Extra flags
