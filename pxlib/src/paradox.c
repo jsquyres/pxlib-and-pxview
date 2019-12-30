@@ -3790,12 +3790,19 @@ _px_get_data_blob(pxdoc_t *pxdoc, const char *data, int len, int hsize, int *mod
 			*value = NULL;
 			return -1;
 		}
-		blobdata = pxdoc->malloc(pxdoc, size, _("Allocate memory for blob data."));
+		// JMS Added +1 to size malloc calculation because valgrind told me to :-)
+		// (see below)
+		blobdata = pxdoc->malloc(pxdoc, size+1, _("Allocate memory for blob data."));
 		if(!blobdata) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not allocate memory for blob data."));
 			*value = NULL;
 			return -1;
 		}
+		// JMS Added memset because valgrind complains of reading of
+		// uninitialized values.  This must mean that later the
+		// blobdata size is getting set to size+1.  Shrug.  Sooo... at
+		// least make sure it is initialized to 0.
+		memset(blobdata, 0, size+1);
 		/* Goto the start of the blob */
 		if((ret = pxblob->seek(pxblob, pxblob->mb_stream, offset+head[0]*16, SEEK_SET)) < 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not fseek start of blob."));
