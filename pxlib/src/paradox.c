@@ -2897,7 +2897,7 @@ static int build_mb_block_list(pxblob_t *pxblob) {
 			return -1;
 		}
 
-		if(pxblob->read(pxblob, pxs, sizeof(TMbBlockHeader3), &mbblockhead) == 0) {
+		if(pxblob->read(pxblob, pxs, sizeof(TMbBlockHeader2), &mbblockhead) == 0) {
 			px_error(pxdoc, PX_RuntimeError, _("Could not read header of block in blob file."));
 			pxdoc->free(pxdoc, blocklist);
 			return -1;
